@@ -154,10 +154,12 @@
 </div>
 
 <dialog class="tela" id="tela" aria-label="Foto ampliada">
-  <button class="tela-fechar" id="tela-fechar" type="button" aria-label="Fechar">×</button>
+  <!-- o quadro cobre o dialog inteiro e fica primeiro de propósito: todo
+       controle vem depois dele, senão fica embaixo e o toque cai no quadro -->
   <div class="tela-quadro" id="tela-quadro">
     <img class="tela-foto" id="tela-foto" alt="">
   </div>
+  <button class="tela-fechar" id="tela-fechar" type="button" aria-label="Fechar">×</button>
   <button class="tela-seta tela-seta--ant" id="tela-ant" type="button" aria-label="Foto anterior">‹</button>
   <button class="tela-seta tela-seta--prox" id="tela-prox" type="button" aria-label="Próxima foto">›</button>
   <p class="tela-legenda">
