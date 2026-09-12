@@ -97,27 +97,148 @@
     const fotos = produto.fotos || [];
     if (!fotos.length) return slotVazio();
 
-    const f = fotos[0];
     const img = el('img', 'foto');
-    img.src = caminhoCard(f);
-    img.alt = f.alt;
+    pintarFoto(img, fotos[0]);
     img.width = 720;
     img.height = 900;
     img.decoding = 'async';
     // o primeiro card está na dobra: lazy nele só atrasa a foto principal
     if (primeira) img.fetchPriority = 'high';
     else img.loading = 'lazy';
-    // o foco é por foto: a mão dela, o topo da torre, onde o produto está
-    if (f.foco) img.style.objectPosition = f.foco;
-    // se o arquivo não vier, cai no slot vazio em vez do ícone quebrado
-    img.onerror = () => abrir.replaceWith(slotVazio());
 
     const abrir = el('button', 'foto-abrir');
     abrir.type = 'button';
-    abrir.setAttribute('aria-label', 'Ver ' + (fotos.length > 1 ? 'as fotos' : 'a foto') + ' de ' + produto.nome);
-    abrir.onclick = () => abrirTela(produto, 0, abrir);
+    abrir.setAttribute('aria-label', 'Ver ' + (fotos.length > 1 ? 'as ' + fotos.length + ' fotos' : 'a foto') + ' de ' + produto.nome);
     abrir.append(img);
-    return abrir;
+
+    if (fotos.length < 2) {
+      abrir.onclick = () => abrirTela(produto, 0, abrir);
+      // se o arquivo não vier, cai no slot vazio em vez do ícone quebrado
+      img.onerror = () => abrir.replaceWith(slotVazio());
+      return abrir;
+    }
+
+    // várias fotos: o botão vira a superfície de arrasto e ganha os pontos embaixo
+    abrir.classList.add('foto-abrir--varias');
+    const caixa = el('div', 'foto-caixa');
+    caixa.append(abrir, carrossel(produto, img, abrir));
+    img.onerror = () => caixa.replaceWith(slotVazio());
+    return caixa;
+  }
+
+  /* ---- carrossel do card ----
+     Um <img> por card, sempre. As outras fotos do produto não existem no DOM:
+     a troca muda o src, e cada foto só começa a baixar no gesto (as vizinhas
+     no primeiro toque, a escolhida antes de aparecer). O índice é o mesmo da
+     tela cheia: fechou na foto 3, o card fica na foto 3. */
+
+  const fotoAtual = {};        // id do produto -> índice da foto que o card mostra
+  const sincronizarCard = {};  // id do produto -> função que leva o card a um índice
+  const LIMIAR_ARRASTO = 50;   // px de arrasto lateral que trocam a foto
+  const MAX_PONTOS = 8;        // acima disso os pontos viram "n de N" em texto
+
+  // o foco é por foto: a mão dela, o topo da torre, onde o produto está
+  function pintarFoto(img, f) {
+    img.src = caminhoCard(f);
+    img.alt = f.alt;
+    img.style.objectPosition = f.foco || '';
+  }
+
+  function carrossel(produto, img, abrir) {
+    const fotos = produto.fotos;
+    const n = fotos.length;
+    const id = produto.id;
+    const indice = () => fotoAtual[id] || 0;
+    const baixadas = new Set([caminhoCard(fotos[0])]);
+
+    // os pontos do anel: um botão de 44px por foto, com o ponto de 7px no meio
+    const pontos = el('div', n > MAX_PONTOS ? 'foto-conta' : 'foto-pontos');
+    const botoes = n > MAX_PONTOS ? [] : fotos.map((f, j) => {
+      const b = el('button', 'ponto');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Foto ' + (j + 1) + ' de ' + n + ' de ' + produto.nome);
+      b.onclick = () => irPara(j);
+      return b;
+    });
+    pontos.append(...botoes);
+
+    function marcar() {
+      const i = indice();
+      if (botoes.length) botoes.forEach((b, j) => j === i ? b.setAttribute('aria-current', 'true') : b.removeAttribute('aria-current'));
+      else pontos.textContent = (i + 1) + ' de ' + n;
+    }
+
+    function baixar(j) {
+      const src = caminhoCard(fotos[(j + n) % n]);
+      if (baixadas.has(src)) return;
+      baixadas.add(src);
+      const pre = new Image();
+      pre.src = src;
+    }
+    const vizinhas = () => { baixar(indice() - 1); baixar(indice() + 1); };
+
+    // a escolhida baixa antes de aparecer, pra não mostrar card vazio no 4G
+    function irPara(j) {
+      const i = (j + n) % n;
+      const anterior = indice();
+      if (i === anterior) return;
+      fotoAtual[id] = i;
+      img.classList.add('foto--trocando');
+      const pre = new Image();
+      pre.onload = () => {
+        img.classList.remove('foto--trocando');
+        pintarFoto(img, fotos[indice()]);
+        marcar();
+        vizinhas();
+      };
+      pre.onerror = () => { fotoAtual[id] = anterior; img.classList.remove('foto--trocando'); marcar(); };
+      pre.src = caminhoCard(fotos[i]);
+      baixadas.add(pre.src);
+    }
+
+    // arrasto: de lado troca (a foto acompanha o dedo), pra cima e pra baixo é
+    // rolagem do sistema. Decide a direção depois de 10px.
+    let toque = null;
+    let ignorarClique = false;
+    abrir.ontouchstart = e => {
+      ignorarClique = false;
+      toque = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY, dx: 0, lateral: false } : null;
+      vizinhas();
+    };
+    abrir.ontouchmove = e => {
+      if (!toque) return;
+      const dx = e.touches[0].clientX - toque.x;
+      const dy = e.touches[0].clientY - toque.y;
+      if (!toque.lateral) {
+        if (Math.abs(dx) < 10 || Math.abs(dx) <= Math.abs(dy)) return;
+        toque.lateral = true;
+        img.style.transition = 'none';
+      }
+      toque.dx = dx;
+      img.style.transform = 'translateX(' + dx + 'px)';
+    };
+    abrir.ontouchend = () => {
+      if (!toque) return;
+      const { dx, lateral } = toque;
+      toque = null;
+      img.style.transition = '';
+      img.style.transform = '';
+      if (!lateral) return;
+      // o browser pode sintetizar um clique depois do arrasto; esse não abre nada
+      ignorarClique = true;
+      if (Math.abs(dx) >= LIMIAR_ARRASTO) irPara(indice() + (dx < 0 ? 1 : -1));
+    };
+    // a rolagem vertical assumiu o toque: a foto volta e nada troca
+    abrir.ontouchcancel = () => { toque = null; img.style.transition = ''; img.style.transform = ''; };
+
+    abrir.onclick = () => {
+      if (ignorarClique) { ignorarClique = false; return; }
+      abrirTela(produto, indice(), abrir);
+    };
+
+    sincronizarCard[id] = irPara;
+    marcar();
+    return pontos;
   }
 
   /* ---- tela cheia ----
@@ -171,6 +292,8 @@
 
   tela.onclose = () => {
     telaFoto.removeAttribute('src');
+    // o card acompanha a foto onde a pessoa parou
+    if (galeria.produto && sincronizarCard[galeria.produto.id]) sincronizarCard[galeria.produto.id](galeria.i);
     if (galeria.origem) galeria.origem.focus();
   };
 

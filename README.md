@@ -48,8 +48,9 @@ não precisam acompanhar o nome.
 
 ## Fotos
 
-Cada produto tem uma lista `fotos`. A primeira é a do card; as outras só aparecem
-na tela cheia, que abre ao tocar na foto. Cada foto tem `arquivo`, `alt` e um
+Cada produto tem uma lista `fotos`. A primeira é a do card; as outras aparecem
+arrastando a foto do card de lado (ou tocando nos pontos embaixo dela) e na tela
+cheia, que abre ao tocar na foto. Cada foto tem `arquivo`, `alt` e um
 `foco` opcional, que diz onde o recorte 4:5 se prende quando a foto é mais alta
 que o quadro.
 
@@ -59,9 +60,10 @@ salvo sem EXIF.
 
 O peso é controlado por construção: o card cria um único `<img>`, o da primeira
 foto, com `loading="lazy"` em todos menos o primeiro da página. As fotos seguintes
-de cada produto não existem no HTML nem no DOM até a tela cheia abrir, e lá só a
-atual e as duas vizinhas são carregadas. Um produto com vinte fotos custa uma foto
-até alguém abrir a galeria.
+de cada produto não existem no HTML nem no DOM: o card tem um único `<img>`, a
+troca muda o `src`, e as vizinhas só começam a baixar no primeiro toque na foto.
+Na tela cheia só a atual e as duas vizinhas são carregadas. Um produto com vinte
+fotos custa uma foto até alguém mexer nela.
 
 ## Bolos
 

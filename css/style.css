@@ -149,6 +149,30 @@ h2 {
   background: var(--rosa-fraco);
 }
 
+/* várias fotos: o botão é a superfície de arrasto (o lado é nosso, a rolagem é
+   do sistema) e embaixo vêm os pontos do anel, um por foto, o atual em tinta
+   (rosa e azul ficam quase iguais no papel; na tela cheia, sobre o escuro, o rosa fica).
+   Cada ponto é um botão de 44px com o ponto de 7px no meio; a faixa sobe 8px
+   sobre a borda da foto pra não abrir um vão de 44px até o nome. */
+.foto-abrir--varias { touch-action: pan-y; overflow: hidden; }
+.foto-abrir--varias .foto { transition: transform 150ms ease-out, opacity 120ms; }
+.foto--trocando { opacity: .35; }
+.foto-pontos { position: relative; display: flex; justify-content: center; margin: -8px 0 -10px; }
+.ponto {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.ponto::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--azul); transition: transform 120ms; }
+.ponto[aria-current]::before { background: var(--tinta); }
+.ponto:active::before { transform: scale(1.5); }
+.foto-conta { text-align: center; font-size: 14px; color: var(--fraca); margin-top: -4px; }
+
 /* sem foto: guarda a proporção pra nada pular quando a foto entrar */
 .foto--vazia {
   display: grid;
