@@ -11,9 +11,12 @@ GitHub Pages servindo da raiz.
 
     index.html             a página
     css/style.css          estilo
-    js/produtos.js         os 14 produtos e os preços
-    js/app.js              catálogo, pedido e a mensagem do WhatsApp
-    img/                   fotos dos produtos e a marca
+    js/produtos.js         os 14 produtos, os preços e a tabela de bolos
+    js/app.js              catálogo, tela cheia, pedido e a mensagem do WhatsApp
+    fonts/                 a fonte de título, um arquivo, com a licença ao lado
+    img/card/              foto de cada produto a 720px, a que o card carrega
+    img/galeria/           a mesma foto a 1200px, só carrega quem abre a tela cheia
+    img/logotipo.webp      a marca
     favicon.ico            ícone, tirado do monograma
     apple-touch-icon.png   ícone de 180px para a tela inicial do iPhone
 
@@ -28,9 +31,9 @@ em nenhum outro arquivo. A ordem do array é a ordem da página.
 
 Dois campos definem como o item é vendido:
 
-- `minimo` é a quantidade mínima, `1` quando não há regra. O contador começa em 0,
-  o primeiro toque pula direto para o mínimo e dali anda de 1 em 1. Descendo abaixo
-  do mínimo volta para 0, nunca para em quantidade inválida, e o envio trava se
+- `minimo` é a quantidade mínima, `1` quando não há regra. O botão "Adicionar"
+  vira o contador no primeiro toque, já no mínimo, e dali anda de 1 em 1.
+  Descendo abaixo do mínimo volta para 0 e o botão reaparece. O envio trava se
   algo escapar.
 - `unidade` nomeia o que o contador conta, quando não é unidade solta. A Torre de
   Cake Donuts usa `unidade: 'torre'`, porque ali o contador conta torres e não
@@ -40,11 +43,31 @@ Dois campos definem como o item é vendido:
 a conversa como pedido de orçamento. Quem define isso é o `id`, em `SOB_ORCAMENTO`
 no `app.js`, e não o `null` em si.
 
-Se um item ficar sem preço, o card renderiza sem valor e sem contador, em silêncio.
-É rede de proteção, não estado esperado.
-
 Renomear um produto mexe só no campo `nome`. Os `id` são identificadores internos e
 não precisam acompanhar o nome.
+
+## Fotos
+
+Cada produto tem uma lista `fotos`. A primeira é a do card; as outras só aparecem
+na tela cheia, que abre ao tocar na foto. Cada foto tem `arquivo`, `alt` e um
+`foco` opcional, que diz onde o recorte 4:5 se prende quando a foto é mais alta
+que o quadro.
+
+Cada arquivo existe em dois tamanhos, `img/card/` a 720px e `img/galeria/` a 1200px
+(ou a largura do original, quando é menor). Nome sem acento e sem espaço, jpg,
+salvo sem EXIF.
+
+O peso é controlado por construção: o card cria um único `<img>`, o da primeira
+foto, com `loading="lazy"` em todos menos o primeiro da página. As fotos seguintes
+de cada produto não existem no HTML nem no DOM até a tela cheia abrir, e lá só a
+atual e as duas vizinhas são carregadas. Um produto com vinte fotos custa uma foto
+até alguém abrir a galeria.
+
+## Bolos
+
+Seção própria, depois dos kits. É tabela de preço por quilo e um caminho para o
+WhatsApp, sem contador e sem soma: sabor, peso e tema são combinados na conversa.
+Os dados ficam em `BOLOS`, no `js/produtos.js`.
 
 ## Prazo
 
@@ -55,16 +78,6 @@ campo de data só bloqueia data que já passou.
 
 A conta de dias é feita em data local com as duas pontas fixadas ao meio-dia. Montar
 em UTC ou na meia-noite faz virada de fuso empurrar o resultado um dia.
-
-## Fotos
-
-Uma por produto, em `img/`, nome sem acento e sem espaço, jpg ou webp, no máximo
-800px de largura, salvas sem EXIF. O `alt` é escrito à mão no `produtos.js` e
-descreve a técnica do doce.
-
-O card usa proporção 3:2, com exceção dos ids listados em `FOTO_ALTA` no `app.js`,
-que usam 1:1. Produto sem foto mostra um campo no pastel da seção e guarda a
-proporção, então nada pula de lugar.
 
 ## Retirada
 

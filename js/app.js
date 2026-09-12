@@ -12,9 +12,6 @@
   const LIMITE_OBS = 300;
   const AVISA_OBS = 200;
 
-  // ids cuja foto usa 1:1 em vez do 3:2 padrão
-  const FOTO_ALTA = ['torre-de-donuts'];
-
   const quantidades = {};
   let querOrcamento = false;
 
@@ -74,25 +71,129 @@
     return n;
   }
 
-  function slotVazio(extra) {
-    const vazio = el('div', 'produto-foto produto-foto--vazia' + extra);
-    vazio.append(el('span', 'produto-foto-aviso', 'Foto em breve'));
+  // preço como forma: o R$ menor, o número em serifa
+  function precoEl(valor, classe) {
+    const p = el('p', 'preco' + (classe ? ' ' + classe : ''));
+    const texto = moeda(valor);
+    p.append(el('span', 'moeda', 'R$'), texto.slice(3));
+    return p;
+  }
+
+  /* ---- fotos ----
+     O card cria um único <img>, a primeira foto do produto. As outras não
+     existem no DOM até a pessoa abrir a tela cheia: é o que segura o peso
+     num produto com dez ou vinte fotos. */
+
+  const caminhoCard = f => 'img/card/' + f.arquivo;
+  const caminhoGaleria = f => 'img/galeria/' + f.arquivo;
+
+  function slotVazio() {
+    const vazio = el('div', 'foto foto--vazia');
+    vazio.append(el('span', null, 'Foto em breve'));
     return vazio;
   }
 
-  function foto(produto) {
-    const extra = FOTO_ALTA.includes(produto.id) ? ' produto-foto--alta' : '';
-    if (!produto.imagem) return slotVazio(extra);
+  function foto(produto, primeira) {
+    const fotos = produto.fotos || [];
+    if (!fotos.length) return slotVazio();
 
-    const img = el('img', 'produto-foto' + extra);
-    img.src = 'img/' + produto.imagem;
-    img.loading = 'lazy';
-    img.alt = produto.alt;
-    // se o arquivo ainda não estiver em img/, cai no slot vazio em vez
-    // de deixar o ícone de imagem quebrada estourando o card
-    img.onerror = () => img.replaceWith(slotVazio(extra));
-    return img;
+    const f = fotos[0];
+    const img = el('img', 'foto');
+    img.src = caminhoCard(f);
+    img.alt = f.alt;
+    img.width = 720;
+    img.height = 900;
+    img.decoding = 'async';
+    // o primeiro card está na dobra: lazy nele só atrasa a foto principal
+    if (primeira) img.fetchPriority = 'high';
+    else img.loading = 'lazy';
+    // o foco é por foto: a mão dela, o topo da torre, onde o produto está
+    if (f.foco) img.style.objectPosition = f.foco;
+    // se o arquivo não vier, cai no slot vazio em vez do ícone quebrado
+    img.onerror = () => abrir.replaceWith(slotVazio());
+
+    const abrir = el('button', 'foto-abrir');
+    abrir.type = 'button';
+    abrir.setAttribute('aria-label', 'Ver ' + (fotos.length > 1 ? 'as fotos' : 'a foto') + ' de ' + produto.nome);
+    abrir.onclick = () => abrirTela(produto, 0, abrir);
+    abrir.append(img);
+    return abrir;
   }
+
+  /* ---- tela cheia ----
+     Um <dialog> só, reaproveitado. Renderiza a foto atual e pré-carrega só a
+     vizinha de cada lado, o resto entra no arrasto. */
+
+  const tela = $('tela');
+  const telaFoto = $('tela-foto');
+  let galeria = { produto: null, i: 0, origem: null };
+
+  function pintarTela() {
+    const fotos = galeria.produto.fotos;
+    const f = fotos[galeria.i];
+    telaFoto.src = caminhoGaleria(f);
+    telaFoto.alt = f.alt;
+    $('tela-nome').textContent = galeria.produto.nome;
+    $('tela-conta').textContent = fotos.length > 1 ? (galeria.i + 1) + ' de ' + fotos.length : '';
+
+    const pontos = $('tela-pontos');
+    pontos.textContent = '';
+    if (fotos.length > 1) {
+      fotos.forEach((_, j) => {
+        const p = el('span');
+        if (j === galeria.i) p.setAttribute('aria-current', 'true');
+        pontos.append(p);
+      });
+    }
+    $('tela-ant').hidden = $('tela-prox').hidden = fotos.length < 2;
+
+    [galeria.i - 1, galeria.i + 1].forEach(j => {
+      if (fotos[j]) { const pre = new Image(); pre.src = caminhoGaleria(fotos[j]); }
+    });
+  }
+
+  function abrirTela(produto, i, origem) {
+    galeria = { produto, i, origem };
+    pintarTela();
+    tela.showModal();
+  }
+
+  function trocarFoto(delta) {
+    const n = galeria.produto.fotos.length;
+    if (n < 2) return;
+    galeria.i = (galeria.i + delta + n) % n;
+    pintarTela();
+  }
+
+  $('tela-fechar').onclick = () => tela.close();
+  $('tela-ant').onclick = () => trocarFoto(-1);
+  $('tela-prox').onclick = () => trocarFoto(1);
+
+  tela.onclose = () => {
+    telaFoto.removeAttribute('src');
+    if (galeria.origem) galeria.origem.focus();
+  };
+
+  tela.onkeydown = e => {
+    if (e.key === 'ArrowRight') trocarFoto(1);
+    if (e.key === 'ArrowLeft') trocarFoto(-1);
+  };
+
+  // arrasto: de lado troca a foto, pra baixo fecha. pinça fica com o sistema
+  let toque = null;
+  tela.ontouchstart = e => {
+    toque = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+  };
+  tela.ontouchend = e => {
+    if (!toque) return;
+    const dx = e.changedTouches[0].clientX - toque.x;
+    const dy = e.changedTouches[0].clientY - toque.y;
+    toque = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) trocarFoto(dx < 0 ? 1 : -1);
+    else if (dy > 80 && dy > Math.abs(dx)) tela.close();
+  };
+
+  /* ---- cards ---- */
 
   // "Por unidade." no normal, "Por torre." na Torre, mais o mínimo quando tem
   function regraDeVenda(produto) {
@@ -128,6 +229,18 @@
     return wrap;
   }
 
+  // "Adicionar" entra; quando a quantidade passa de zero ele vira o contador
+  function acao(produto) {
+    const wrap = el('div', 'acao');
+    wrap.id = 'acao-' + produto.id;
+    const add = el('button', 'adicionar', 'Adicionar');
+    add.type = 'button';
+    add.setAttribute('aria-label', 'Adicionar ' + produto.nome);
+    add.onclick = () => mudar(produto.id, 1);
+    wrap.append(add, stepper(produto));
+    return wrap;
+  }
+
   function marcarOrcamento(produto) {
     const marcar = el('label', 'marcar');
     const check = el('input');
@@ -141,7 +254,7 @@
     return marcar;
   }
 
-  function card(produto) {
+  function card(produto, primeira) {
     const li = el('li', 'produto');
     const corpo = el('div', 'produto-corpo');
 
@@ -150,23 +263,21 @@
 
     if (ehOrcamento(produto)) {
       li.className = 'produto produto--orcamento';
-      corpo.append(
-        el('p', 'produto-preco produto-preco--sob', 'Sob orçamento'),
-        marcarOrcamento(produto)
-      );
+      const linha = el('div', 'produto-linha');
+      linha.append(el('p', 'preco preco--sob', 'Sob orçamento'), marcarOrcamento(produto));
+      corpo.append(linha);
     } else if (temPreco(produto)) {
-      corpo.append(el('p', 'produto-preco', moeda(produto.preco)));
+      const linha = el('div', 'produto-linha');
+      linha.append(precoEl(produto.preco), acao(produto));
+      corpo.append(linha);
       // no kit o preço é do kit inteiro, não cabe "por unidade"
-      if (produto.categoria !== 'kit') {
-        corpo.append(el('p', 'produto-regra', regraDeVenda(produto)));
-      }
-      corpo.append(stepper(produto));
+      if (produto.categoria !== 'kit') corpo.append(el('p', 'produto-regra', regraDeVenda(produto)));
     } else {
       // sem preço: card sem valor e sem contador
       li.className = 'produto produto--sem-preco';
     }
 
-    li.append(foto(produto), corpo);
+    li.append(foto(produto, primeira), corpo);
     return li;
   }
 
@@ -188,6 +299,7 @@
     else quantidades[id] = novo;
 
     $('qtd-' + id).textContent = novo;
+    $('acao-' + id).classList.toggle('acao--aberta', novo > 0);
     atualizar();
   }
 
@@ -308,9 +420,40 @@
     return linhas.join('\n');
   }
 
+  /* ---- bolos: tabela e caminho pra conversa, sem contador ---- */
+
+  function montarBolos() {
+    const linhas = $('bolos-linhas');
+    BOLOS.linhas.forEach(b => {
+      const tr = el('tr');
+      const th = el('th', null, b.tipo);
+      th.setAttribute('scope', 'row');
+      const td = el('td');
+      td.append(precoEl(b.precoKg));
+      tr.append(th, td, el('td', null, b.sabores));
+      linhas.append(tr);
+    });
+
+    $('bolos-topo').textContent = BOLOS.topo;
+    $('bolos-extras').textContent = BOLOS.extras;
+    $('bolos-corte').textContent = BOLOS.corte;
+
+    const rend = $('bolos-rendimento');
+    BOLOS.rendimento.forEach(r => {
+      const tr = el('tr');
+      const th = el('th', null, r.kg + ' kg');
+      th.setAttribute('scope', 'row');
+      tr.append(th, el('td', null, 'em torno de ' + r.fatias + ' fatias'));
+      rend.append(tr);
+    });
+  }
+
+  /* ---- monta tudo ---- */
+
   const avulsos = $('lista-avulsos');
   const kits = $('lista-kits');
-  PRODUTOS.forEach(p => (p.categoria === 'kit' ? kits : avulsos).append(card(p)));
+  PRODUTOS.forEach((p, i) => (p.categoria === 'kit' ? kits : avulsos).append(card(p, i === 0)));
+  montarBolos();
 
   const form = $('form-pedido');
   const campoData = $('data-festa');
