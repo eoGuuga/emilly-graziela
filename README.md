@@ -52,11 +52,12 @@ nenhum dos dois exige 100 unidades. Trocar só o campo `nome`, nada mais depende
 
 ## Prazo
 
-15 dias de antecedência para doces personalizados. Prazo menor ela aceita, então a
-página avisa em vez de bloquear: data com menos de 15 dias mostra um recado perto do
-campo, e a mensagem do WhatsApp sai com uma linha sinalizando, pra ela ver antes de
-responder. Nenhum valor de taxa de urgência aparece em lugar nenhum, ela não passou
-número.
+O ideal é 15 dias de antecedência, que é o prazo que ela usa pra organizar a agenda.
+Não é regra rígida: tendo disponibilidade ela faz de um dia pro outro. Por isso a
+página avisa em vez de bloquear. Data com menos de 15 dias mostra um recado perto do
+campo convidando a consultar disponibilidade, e a mensagem do WhatsApp sai com uma
+linha sinalizando e pedindo confirmação. Nenhum valor aparece em lugar nenhum, e a
+palavra "taxa" não existe no site.
 
 A conta de dias é feita em data local com as duas pontas fixadas ao meio-dia. Montar
 em UTC ou na meia-noite faz virada de fuso empurrar o resultado um dia.

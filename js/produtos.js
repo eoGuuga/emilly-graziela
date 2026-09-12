@@ -77,14 +77,19 @@ const PRODUTOS = [
   {
     id: 'trufa',
     nome: 'Trufa',
-    descricao: 'Mini trufa de ganache, decoração 2D, acompanha forma de pétalas transparente.',
+    descricao: 'Mini trufa de ganache, com decoração em 2D.',
     preco: 8.00,
     imagem: '',
     alt: '',
     categoria: 'avulso',
     minimo: 1,
     unidade: '',
-    observacao: ''
+    observacao: `Ela tirou a forma de pétalas transparente da descrição em 12/09/2026, porque nem sempre acha e não quer prometer.
+
+Mandou também estes dois trechos por escrito, transcritos literal, mas ainda NÃO confirmou de qual produto são:
+"Os sabores podem variar de acordo com a disponibilidade dos recheios no momento da produção."
+"Caso o cliente prefira, é possível especificar um único sabor para toda a quantidade encomendada, mediante disponibilidade dos ingredientes."
+Veio junto uma lista encabeçada pela palavra "Trufas" com brigadeiro, ninho, ninho com creme de avelã e prestígio. Provavelmente é daqui, mas nada disso entra na página até ela confirmar.`
   },
   {
     id: 'cento-brigadeiro-personalizado',
@@ -96,7 +101,9 @@ const PRODUTOS = [
     categoria: 'avulso',
     minimo: 50,
     unidade: '',
-    observacao: 'Sem descrição ainda, ela ficou de mandar uma frase. O nome pode mudar, porque não exige 100 e briga com o mínimo no mesmo card. Trocar só aqui no nome.'
+    observacao: `Sem descrição ainda. O nome pode mudar, porque não exige 100 e briga com o mínimo no mesmo card. Trocar só aqui no nome.
+
+PENDENTE: apareceu um R$ 3,50 pra conferir contra o R$ 3,80 que está aqui. Não sei de onde saiu o 3,50, ela nunca me passou esse número. Mantido 3,80 até ela confirmar.`
   },
   {
     id: 'cake-donut',
@@ -120,7 +127,14 @@ const PRODUTOS = [
     categoria: 'avulso',
     minimo: 25,
     unidade: '',
-    observacao: 'R$ 3,00 x 100 fecha nos R$ 300,00 do cento. O nome pode mudar, porque o mínimo é 25 e não 100. Trocar só aqui no nome.'
+    observacao: `R$ 3,00 x 100 fecha nos R$ 300,00 do cento. O nome pode mudar, porque o mínimo é 25 e não 100. Trocar só aqui no nome.
+
+Este é o produto que ela chama de "Doces Gourmet", que no cardápio de 2025 era "Cento de Doces Gourmet". O "sabores a consultar" segue em aberto, ela ainda não disse quais são.
+
+Mandou estes dois trechos por escrito, transcritos literal, mas ainda NÃO confirmou de qual produto são:
+"Os sabores podem variar de acordo com a disponibilidade dos recheios no momento da produção."
+"Caso o cliente prefira, é possível especificar um único sabor para toda a quantidade encomendada, mediante disponibilidade dos ingredientes."
+A lista que veio junto estava encabeçada pela palavra "Trufas", então pode ser de lá e não daqui. Nada entra na página até ela confirmar.`
   },
   {
     id: 'torre-de-donuts',

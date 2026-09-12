@@ -273,11 +273,11 @@
     linhas.push('Data da festa: ' + dataBR(dataFesta));
     linhas.push('Já sei que é retirada, você não faz entrega.');
 
-    // ela aceita pedido abaixo do prazo, mas quer ver isso sinalizado
-    // antes de responder. sem número de taxa, que ela não passou
+    // os 15 dias são pra ela organizar a agenda, não são regra rígida.
+    // aqui é sinalizar e perguntar disponibilidade, nunca falar em taxa
     if (foraDoPrazo(dataFesta)) {
       linhas.push('Atenção: ' + textoPrazo(diasAte(dataFesta)) +
-                  ', menos que os 15 dias de antecedência. Me avisa se tem taxa de urgência.');
+                  ', menos que os 15 dias de antecedência. Você consegue confirmar se tem disponibilidade?');
     }
 
     linhas.push('');
