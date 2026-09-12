@@ -60,10 +60,11 @@ salvo sem EXIF.
 
 O peso é controlado por construção: o card cria um único `<img>`, o da primeira
 foto, com `loading="lazy"` em todos menos o primeiro da página. As fotos seguintes
-de cada produto não existem no HTML nem no DOM: o card tem um único `<img>`, a
-troca muda o `src`, e as vizinhas só começam a baixar no primeiro toque na foto.
-Na tela cheia só a atual e as duas vizinhas são carregadas. Um produto com vinte
-fotos custa uma foto até alguém mexer nela.
+de cada produto não existem no HTML nem no DOM: em repouso o card tem um único
+`<img>`; durante o arrasto nasce a vizinha, desliza junto e, terminada a troca,
+vira a foto do card. As vizinhas só começam a baixar no primeiro toque na foto.
+Na tela cheia, o mesmo trilho, com a atual e as duas vizinhas carregadas. Um
+produto com vinte fotos custa uma foto até alguém mexer nela.
 
 ## Bolos
 

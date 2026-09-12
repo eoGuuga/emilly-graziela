@@ -97,11 +97,7 @@
     const fotos = produto.fotos || [];
     if (!fotos.length) return slotVazio();
 
-    const img = el('img', 'foto');
-    pintarFoto(img, fotos[0]);
-    img.width = 720;
-    img.height = 900;
-    img.decoding = 'async';
+    const img = novaImg(fotos[0]);
     // o primeiro card está na dobra: lazy nele só atrasa a foto principal
     if (primeira) img.fetchPriority = 'high';
     else img.loading = 'lazy';
@@ -144,10 +140,20 @@
     img.style.objectPosition = f.foco || '';
   }
 
+  function novaImg(f) {
+    const img = el('img', 'foto');
+    pintarFoto(img, f);
+    img.width = 720;
+    img.height = 900;
+    img.decoding = 'async';
+    return img;
+  }
+
   function carrossel(produto, img, abrir) {
     const fotos = produto.fotos;
     const n = fotos.length;
     const id = produto.id;
+    const vira = j => (j + n) % n;
     const indice = () => fotoAtual[id] || 0;
     const baixadas = new Set([caminhoCard(fotos[0])]);
 
@@ -169,7 +175,7 @@
     }
 
     function baixar(j) {
-      const src = caminhoCard(fotos[(j + n) % n]);
+      const src = caminhoCard(fotos[vira(j)]);
       if (baixadas.has(src)) return;
       baixadas.add(src);
       const pre = new Image();
@@ -177,11 +183,11 @@
     }
     const vizinhas = () => { baixar(indice() - 1); baixar(indice() + 1); };
 
-    // a escolhida baixa antes de aparecer, pra não mostrar card vazio no 4G
+    // troca sem gesto (ponto, tela cheia): a escolhida baixa antes de aparecer
     function irPara(j) {
-      const i = (j + n) % n;
+      const i = vira(j);
       const anterior = indice();
-      if (i === anterior) return;
+      if (i === anterior || animando) return;
       fotoAtual[id] = i;
       img.classList.add('foto--trocando');
       const pre = new Image();
@@ -196,11 +202,59 @@
       baixadas.add(pre.src);
     }
 
-    // arrasto: de lado troca (a foto acompanha o dedo), pra cima e pra baixo é
-    // rolagem do sistema. Decide a direção depois de 10px.
-    let toque = null;
+    // arrasto: a vizinha nasce ao lado da foto, desliza junto com o dedo e
+    // morre quando o gesto termina. Em repouso o card tem um <img> só; durante
+    // o gesto, dois. A moldura (o botão) fica parada: o que anda é o conteúdo.
+    let toque = null;          // o dedo: {x, y, dx, lateral}
+    let vizinha = null;        // o segundo <img>, só durante o gesto
+    let lado = 0;              // 1: vizinha à direita (a próxima), -1: à esquerda (a anterior)
+    let animando = false;      // entre soltar e a animação terminar
     let ignorarClique = false;
+    const mover = dx => abrir.style.setProperty('--dx', dx);
+
+    function porLado(l) {
+      if (vizinha && lado === l) return;
+      if (vizinha) vizinha.remove();
+      lado = l;
+      vizinha = novaImg(fotos[vira(indice() + l)]);
+      vizinha.classList.add('foto--vizinha');
+      vizinha.style.setProperty('--lado', String(l));
+      abrir.append(vizinha);
+    }
+
+    // fim da animação: a vizinha vira a foto do card, ou some
+    function terminar(concluiu) {
+      if (!animando) return;
+      animando = false;
+      abrir.classList.remove('foto-abrir--solta');
+      if (concluiu) {
+        fotoAtual[id] = vira(indice() + lado);
+        vizinha.classList.remove('foto--vizinha');
+        vizinha.style.removeProperty('--lado');
+        img.remove();
+        img = vizinha;
+      } else {
+        vizinha.remove();
+      }
+      vizinha = null;
+      lado = 0;
+      mover('0px');
+      marcar();
+      if (concluiu) vizinhas();
+    }
+
+    function soltar(dx) {
+      if (!vizinha) { mover('0px'); return; }
+      const concluiu = Math.abs(dx) >= LIMIAR_ARRASTO;
+      animando = true;
+      abrir.classList.add('foto-abrir--solta');
+      mover(concluiu ? (lado > 0 ? '-100%' : '100%') : '0px');
+      vizinha.ontransitionend = () => terminar(concluiu);
+      setTimeout(() => terminar(concluiu), 260);   // se a transição não disparar (movimento reduzido)
+    }
+
     abrir.ontouchstart = e => {
+      if (animando) { toque = null; return; }
       ignorarClique = false;
       toque = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY, dx: 0, lateral: false } : null;
       vizinhas();
@@ -212,24 +266,27 @@
       if (!toque.lateral) {
         if (Math.abs(dx) < 10 || Math.abs(dx) <= Math.abs(dy)) return;
         toque.lateral = true;
-        img.style.transition = 'none';
       }
       toque.dx = dx;
-      img.style.transform = 'translateX(' + dx + 'px)';
+      if (dx !== 0) porLado(dx < 0 ? 1 : -1);
+      mover(dx + 'px');
     };
     abrir.ontouchend = () => {
       if (!toque) return;
       const { dx, lateral } = toque;
       toque = null;
-      img.style.transition = '';
-      img.style.transform = '';
       if (!lateral) return;
       // o browser pode sintetizar um clique depois do arrasto; esse não abre nada
       ignorarClique = true;
-      if (Math.abs(dx) >= LIMIAR_ARRASTO) irPara(indice() + (dx < 0 ? 1 : -1));
+      soltar(dx);
     };
-    // a rolagem vertical assumiu o toque: a foto volta e nada troca
-    abrir.ontouchcancel = () => { toque = null; img.style.transition = ''; img.style.transform = ''; };
+    // a rolagem vertical assumiu o toque: as duas voltam juntas e nada troca
+    abrir.ontouchcancel = () => {
+      if (!toque) return;
+      const { lateral } = toque;
+      toque = null;
+      if (lateral) soltar(0);
+    };
 
     abrir.onclick = () => {
       if (ignorarClique) { ignorarClique = false; return; }
@@ -246,7 +303,8 @@
      vizinha de cada lado, o resto entra no arrasto. */
 
   const tela = $('tela');
-  const telaFoto = $('tela-foto');
+  let telaFoto = $('tela-foto');
+  const quadro = $('tela-quadro');
   let galeria = { produto: null, i: 0, origem: null };
 
   function pintarTela() {
@@ -291,6 +349,12 @@
   $('tela-prox').onclick = () => trocarFoto(1);
 
   tela.onclose = () => {
+    // gesto pela metade quando fechou: a vizinha some e o trilho zera
+    if (vizinhaTela) { vizinhaTela.remove(); vizinhaTela = null; }
+    animandoTela = false;
+    ladoTela = 0;
+    quadro.classList.remove('tela-quadro--solta');
+    moverTela('0px');
     telaFoto.removeAttribute('src');
     // o card acompanha a foto onde a pessoa parou
     if (galeria.produto && sincronizarCard[galeria.produto.id]) sincronizarCard[galeria.produto.id](galeria.i);
@@ -302,18 +366,89 @@
     if (e.key === 'ArrowLeft') trocarFoto(-1);
   };
 
-  // arrasto: de lado troca a foto, pra baixo fecha. pinça fica com o sistema
-  let toque = null;
+  // arrasto: de lado a foto acompanha o dedo e a vizinha entra pela borda,
+  // como no card; pra baixo fecha; pinça fica com o sistema. Em repouso o
+  // quadro tem um <img> só; durante o gesto, dois.
+  let toqueTela = null;
+  let vizinhaTela = null;
+  let ladoTela = 0;
+  let animandoTela = false;
+  const moverTela = dx => quadro.style.setProperty('--dx', dx);
+
+  function vizinhaPorLado(l) {
+    if (vizinhaTela && ladoTela === l) return;
+    if (vizinhaTela) vizinhaTela.remove();
+    ladoTela = l;
+    const fotos = galeria.produto.fotos;
+    const f = fotos[(galeria.i + l + fotos.length) % fotos.length];
+    vizinhaTela = el('img', 'tela-foto tela-foto--vizinha');
+    vizinhaTela.src = caminhoGaleria(f);
+    vizinhaTela.alt = f.alt;
+    vizinhaTela.style.setProperty('--lado', String(l));
+    quadro.append(vizinhaTela);
+  }
+
+  // fim da animação: a vizinha vira a foto da tela, ou some
+  function terminarTela(concluiu) {
+    if (!animandoTela) return;
+    animandoTela = false;
+    quadro.classList.remove('tela-quadro--solta');
+    if (concluiu) {
+      const fotos = galeria.produto.fotos;
+      galeria.i = (galeria.i + ladoTela + fotos.length) % fotos.length;
+      vizinhaTela.classList.remove('tela-foto--vizinha');
+      vizinhaTela.style.removeProperty('--lado');
+      telaFoto.remove();
+      telaFoto = vizinhaTela;
+      telaFoto.id = 'tela-foto';
+    } else {
+      vizinhaTela.remove();
+    }
+    vizinhaTela = null;
+    ladoTela = 0;
+    moverTela('0px');
+    if (concluiu) pintarTela();
+  }
+
+  function soltarTela(dx) {
+    if (!vizinhaTela) { moverTela('0px'); return; }
+    const concluiu = Math.abs(dx) >= LIMIAR_ARRASTO;
+    animandoTela = true;
+    quadro.classList.add('tela-quadro--solta');
+    // aqui o trilho anda a largura do quadro, não a da foto, que pode ser mais estreita
+    const largura = quadro.clientWidth || 0;
+    moverTela(concluiu ? (ladoTela > 0 ? -largura : largura) + 'px' : '0px');
+    vizinhaTela.ontransitionend = () => terminarTela(concluiu);
+    setTimeout(() => terminarTela(concluiu), 260);
+  }
+
   tela.ontouchstart = e => {
-    toque = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+    if (animandoTela) { toqueTela = null; return; }
+    toqueTela = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY, dx: 0, dy: 0, lateral: false } : null;
   };
-  tela.ontouchend = e => {
-    if (!toque) return;
-    const dx = e.changedTouches[0].clientX - toque.x;
-    const dy = e.changedTouches[0].clientY - toque.y;
-    toque = null;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) trocarFoto(dx < 0 ? 1 : -1);
+  tela.ontouchmove = e => {
+    if (!toqueTela) return;
+    const dx = e.touches[0].clientX - toqueTela.x;
+    const dy = e.touches[0].clientY - toqueTela.y;
+    toqueTela.dx = dx;
+    toqueTela.dy = dy;
+    if (!toqueTela.lateral) {
+      if (Math.abs(dx) < 10 || Math.abs(dx) <= Math.abs(dy) || galeria.produto.fotos.length < 2) return;
+      toqueTela.lateral = true;
+    }
+    if (dx !== 0) vizinhaPorLado(dx < 0 ? 1 : -1);
+    moverTela(dx + 'px');
+  };
+  tela.ontouchend = () => {
+    if (!toqueTela) return;
+    const { dx, dy, lateral } = toqueTela;
+    toqueTela = null;
+    if (lateral) soltarTela(dx);
     else if (dy > 80 && dy > Math.abs(dx)) tela.close();
+  };
+  tela.ontouchcancel = () => {
+    if (toqueTela && toqueTela.lateral) soltarTela(0);
+    toqueTela = null;
   };
 
   /* ---- cards ---- */

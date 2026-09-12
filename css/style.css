@@ -149,14 +149,28 @@ h2 {
   background: var(--rosa-fraco);
 }
 
-/* várias fotos: o botão é a superfície de arrasto (o lado é nosso, a rolagem é
-   do sistema) e embaixo vêm os pontos do anel, um por foto, o atual em tinta
-   (rosa e azul ficam quase iguais no papel; na tela cheia, sobre o escuro, o rosa fica).
-   Cada ponto é um botão de 44px com o ponto de 7px no meio; a faixa sobe 8px
-   sobre a borda da foto pra não abrir um vão de 44px até o nome. */
-.foto-abrir--varias { touch-action: pan-y; overflow: hidden; }
-.foto-abrir--varias .foto { transition: transform 150ms ease-out, opacity 120ms; }
+/* várias fotos: o botão é a moldura, parada e com overflow escondido; o que
+   anda dentro dela é o conteúdo. A foto acompanha o dedo e a vizinha nasce ao
+   lado (--lado 1 à direita, -1 à esquerda), deslizando junto; soltou, as duas
+   animam até o fim ou voltam juntas, e o card fica com um <img> só de novo.
+   O lado é nosso, a rolagem é do sistema. Embaixo, os pontos do anel, um por
+   foto, o atual em tinta (rosa e azul ficam quase iguais no papel; na tela
+   cheia, sobre o escuro, o rosa fica). Cada ponto é um botão de 44px com o
+   ponto de 7px no meio; a faixa sobe 8px sobre a borda da foto pra não abrir
+   um vão de 44px até o nome. */
+.foto-abrir--varias { position: relative; overflow: hidden; touch-action: pan-y; }
+.foto-abrir--varias:active { transform: none; }
+.foto-abrir--varias .foto { border-radius: 0; transform: translateX(var(--dx, 0px)); transition: opacity 120ms; }
+.foto-abrir--solta .foto { transition: transform 200ms ease-out, opacity 120ms; }
+/* duas classes de propósito: precisa vencer a regra da foto logo acima */
+.foto-abrir--varias .foto--vizinha {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  transform: translateX(calc(var(--lado) * 100% + var(--dx, 0px)));
+}
 .foto--trocando { opacity: .35; }
+@media (prefers-reduced-motion: reduce) { .foto-abrir--solta .foto { transition: opacity 120ms; } }
 .foto-pontos { position: relative; display: flex; justify-content: center; margin: -8px 0 -10px; }
 .ponto {
   width: 44px;
@@ -555,8 +569,23 @@ body:has(.tela[open]) { overflow: hidden; }
   place-items: center;
   padding: 56px 0 84px;
   touch-action: pan-y pinch-zoom;
+  overflow: hidden;
 }
-.tela-foto { max-width: 100%; max-height: 100%; object-fit: contain; }
+/* o mesmo trilho do card: a foto anda com --dx e a vizinha nasce a 100% do lado */
+.tela-foto { max-width: 100%; max-height: 100%; object-fit: contain; transform: translateX(var(--dx, 0px)); }
+.tela-quadro--solta .tela-foto { transition: transform 200ms ease-out; }
+.tela-quadro .tela-foto--vizinha {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  padding: 56px 0 84px;
+  box-sizing: border-box;
+  transform: translateX(calc(var(--lado) * 100% + var(--dx, 0px)));
+}
+@media (prefers-reduced-motion: reduce) { .tela-quadro--solta .tela-foto { transition: none; } }
 
 .tela-fechar,
 .tela-seta {
