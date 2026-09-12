@@ -16,50 +16,13 @@
 <header class="topo">
   <img class="marca" src="img/logotipo.webp" width="240" height="240"
        alt="Emilly Graziela Candy Design">
-  <p class="topo-frase">Doces decorados sob encomenda, com o tema da sua festa.</p>
-  <p class="topo-local">São Paulo, zona leste. Atendimento pelo WhatsApp.</p>
+  <p class="topo-linha">Sob encomenda, no tema da sua festa.<br>São Paulo, zona leste.</p>
+  <p class="topo-retirada">Não tem entrega: você retira comigo ou manda buscar por aplicativo, por sua conta.</p>
 </header>
 
 <main>
 
-  <section class="bloco">
-    <div class="coluna">
-      <hr class="pontos">
-      <h2>Antes de montar seu pedido</h2>
-      <dl class="condicoes">
-        <div class="condicao">
-          <dt>Encomenda</dt>
-          <dd>Os doces são feitos para uma data. Você informa a data da festa ao enviar o pedido.</dd>
-        </div>
-        <div class="condicao">
-          <dt>Prazo</dt>
-          <dd>O ideal é pedir com 15 dias de antecedência, que é o prazo que ela usa para organizar a agenda. Para uma data mais curta, mande uma mensagem consultando a disponibilidade.</dd>
-        </div>
-        <div class="condicao">
-          <dt>Retirada</dt>
-          <dd>Não tem entrega. Você retira combinando o horário pelo WhatsApp, ou manda buscar por aplicativo, por sua conta.</dd>
-        </div>
-        <div class="condicao">
-          <dt>Pagamento</dt>
-          <dd>50% para garantir a data, 50% um dia antes da retirada.</dd>
-        </div>
-        <div class="condicao">
-          <dt>Pix à vista</dt>
-          <dd>5% de desconto no valor total.</dd>
-        </div>
-        <div class="condicao">
-          <dt>Cartão de crédito</dt>
-          <dd>Por link de pagamento, parcelável. Os juros ficam por conta da cliente.</dd>
-        </div>
-        <div class="condicao">
-          <dt>Atendimento</dt>
-          <dd>Terça a sábado, das 10h às 18h.</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <section class="bloco" id="avulsos">
+  <section class="bloco bloco--primeiro" id="avulsos">
     <div class="coluna">
       <hr class="pontos">
       <h2>Doces avulsos</h2>
@@ -80,7 +43,7 @@
     <div class="coluna">
       <hr class="pontos">
       <h2>Bolos</h2>
-      <p class="bloco-nota">Preço por quilo. Sabor, peso e tema são combinados na conversa, então o bolo não entra no pedido da página.</p>
+      <p class="bloco-nota">Preço por quilo. Sabor, peso e tema a gente combina na conversa, por isso o bolo não entra no pedido da página.</p>
 
       <table class="tabela tabela--bolos">
         <thead>
@@ -106,7 +69,7 @@
     <div class="coluna">
       <p class="aviso-js">
         Para montar o pedido aqui na página é preciso ativar o JavaScript.
-        Se preferir, chame direto no WhatsApp
+        Se preferir, me chama direto no WhatsApp
         <a href="https://wa.me/5511960834829">(11) 96083-4829</a>.
       </p>
     </div>
@@ -116,6 +79,9 @@
     <div class="coluna">
       <hr class="pontos">
       <h2>Seu pedido</h2>
+
+      <h3 class="pedido-sub">Como pagar</h3>
+      <p class="pedido-texto">50% pra garantir a data e 50% um dia antes da retirada. No Pix à vista tem 5% de desconto. Cartão de crédito por link, parcelável, com os juros por sua conta.</p>
 
       <div id="pedido-vazio" class="pedido-vazio">
         <p>Você ainda não escolheu nada.</p>
@@ -134,8 +100,9 @@
           <p class="campo">
             <label for="data-festa">Data da festa</label>
             <input type="date" id="data-festa" name="data-festa" required>
+            <span class="ajuda">Os doces são feitos pra essa data. O ideal é encomendar com 15 dias de antecedência, que é o prazo que eu uso pra organizar a agenda; com menos, me chama que eu vejo a disponibilidade.</span>
             <span class="erro" id="erro-data" hidden>Informe a data da festa para enviar o pedido.</span>
-            <span class="aviso-prazo" id="aviso-prazo" hidden>Menos de 15 dias de antecedência. Chame no WhatsApp para consultar a disponibilidade.</span>
+            <span class="aviso-prazo" id="aviso-prazo" hidden>Menos de 15 dias de antecedência. Me chama no WhatsApp que eu vejo a disponibilidade.</span>
           </p>
           <p class="campo">
             <label for="obs">Quer deixar alguma observação? <span class="opcional">(opcional)</span></label>
@@ -144,7 +111,7 @@
           </p>
           <p class="erro" id="erro-minimo" hidden></p>
           <button type="submit" class="botao-enviar">Enviar pedido no WhatsApp</button>
-          <p class="form-nota">O pedido abre no WhatsApp já escrito. Nada é cobrado aqui.</p>
+          <p class="form-nota">O pedido abre no WhatsApp já escrito, e a retirada a gente combina por lá. Nada é cobrado aqui. Atendo de terça a sábado, das 10h às 18h.</p>
         </form>
       </div>
     </div>
@@ -170,6 +137,7 @@
     <hr class="pontos">
     <p class="rodape-nome">Emilly Graziela Candy Design</p>
     <p class="rodape-local">São Paulo, zona leste</p>
+    <p class="rodape-local">Terça a sábado, das 10h às 18h</p>
     <p class="rodape-contato">
       <a href="https://wa.me/5511960834829">WhatsApp (11) 96083-4829</a>
       <a href="https://www.instagram.com/emillybakeoff/">Instagram @emillybakeoff</a>

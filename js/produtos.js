@@ -134,7 +134,7 @@ const PRODUTOS = [
   {
     id: 'biscoito-decorado',
     nome: 'Biscoito Decorado',
-    descricao: 'Você manda os modelos que quer, ou só o tema, e recebe o orçamento.',
+    descricao: 'Você me manda os modelos que quer, ou só o tema, e eu te passo o orçamento.',
     preco: null,
     categoria: 'avulso',
     minimo: 1,
@@ -195,5 +195,5 @@ const BOLOS = {
     { kg: 3, fatias: '28 a 30' },
     { kg: 4, fatias: '38 a 40' }
   ],
-  corte: 'A partir de 4 kg, a sugestão é o bolo quadrado, que é bolo de corte.'
+  corte: 'A partir de 4 kg, eu sugiro o bolo quadrado, que é bolo de corte.'
 };

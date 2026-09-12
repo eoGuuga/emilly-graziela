@@ -73,7 +73,7 @@ button { -webkit-user-select: none; user-select: none; }
 /* o pontilhado do anel da logo, esticado, como divisor */
 .pontos {
   width: 7.5rem;
-  margin: 0 auto 22px;
+  margin: 0 auto 18px;
   border: 0;
   border-top: 3px dotted var(--azul);
 }
@@ -81,23 +81,27 @@ button { -webkit-user-select: none; user-select: none; }
 
 /* topo */
 
-.topo { text-align: center; padding: 44px 20px 16px; }
-.marca { width: 128px; height: 128px; margin: 0 auto; }
+.topo { text-align: center; padding: 24px 20px 0; }
+.marca { width: 104px; height: 104px; margin: 0 auto; }
 
-.topo-frase {
+/* quatro pesos de texto na página: decide (serifa 17px), identifica (sans 14px
+   secundária), fecha (sans 14,5px) e detalhe (sans 14px). No topo só os dois primeiros */
+.topo-linha { font-size: 14px; line-height: 1.45; color: var(--fraca); margin-top: 12px; }
+
+/* a única condição eliminatória, sozinha, acima de qualquer "Adicionar" */
+.topo-retirada {
   font-family: var(--serifa);
   font-weight: 600;
-  font-size: 21px;
-  line-height: 1.3;
-  max-width: 19rem;
-  margin: 22px auto 0;
+  font-size: 16px;
+  line-height: 1.35;
+  max-width: 23rem;
+  margin: 14px auto 0;
 }
-
-.topo-local { font-size: 14px; color: var(--fraca); margin-top: 10px; }
 
 /* blocos */
 
 .bloco { padding-block: 56px; }
+.bloco--primeiro { padding-top: 14px; }
 .bloco--azul { background: var(--azul-fraco); }
 
 h2 {
@@ -116,15 +120,9 @@ h2 {
   margin: 12px auto 0;
 }
 
-/* condições */
-
-.condicoes { display: grid; gap: 18px; margin-top: 30px; }
-.condicao dt { font-family: var(--serifa); font-weight: 600; font-size: 17px; }
-.condicao dd { margin: 4px 0 0; color: var(--fraca); font-size: 15.5px; }
-
 /* produtos: uma coluna no celular, um produto por tela */
 
-.lista-produtos { display: grid; gap: 52px; margin-top: 36px; }
+.lista-produtos { display: grid; gap: 52px; margin-top: 20px; }
 
 .produto { display: grid; gap: 14px; align-content: start; }
 .produto-corpo { display: grid; gap: 6px; }
@@ -334,7 +332,11 @@ h2 {
 
 /* pedido */
 
-.pedido-vazio { text-align: center; color: var(--fraca); margin-top: 22px; }
+/* o fechamento: como pagar, sempre à vista, mesmo com pedido vazio */
+.pedido-sub { font-family: var(--serifa); font-weight: 600; font-size: 17px; margin-top: 26px; }
+.pedido-texto { font-size: 14.5px; line-height: 1.55; color: var(--fraca); margin-top: 6px; max-width: 30rem; }
+
+.pedido-vazio { text-align: center; color: var(--fraca); margin-top: 26px; }
 
 .resumo { display: grid; gap: 14px; margin-top: 30px; }
 .resumo-linha {
@@ -384,6 +386,7 @@ h2 {
 .form-pedido [aria-invalid] { border-color: #A03027; }
 
 .opcional { font-weight: normal; color: var(--fraca); }
+.ajuda { font-size: 14px; line-height: 1.45; color: var(--fraca); }
 .contador { font-size: 13px; color: var(--fraca); text-align: right; }
 .erro { font-size: 14px; color: #A03027; }
 
@@ -557,13 +560,12 @@ body:has(.tela[open]) { overflow: hidden; }
 /* desktop: duas colunas de produtos, mais ar */
 
 @media (min-width: 720px) {
-  .topo { padding-top: 64px; }
-  .marca { width: 150px; height: 150px; }
-  .topo-frase { font-size: 25px; max-width: 24rem; }
+  .topo { padding-top: 40px; }
+  .marca { width: 128px; height: 128px; }
+  .topo-retirada { font-size: 19px; max-width: 26rem; }
   .bloco { padding-block: 88px; }
   h2 { font-size: 33px; }
   .pontos { margin-bottom: 26px; }
-  .condicoes { grid-template-columns: 1fr 1fr; gap: 24px 40px; margin-top: 40px; }
   .lista-produtos { grid-template-columns: 1fr 1fr; gap: 56px 32px; margin-top: 44px; }
   .produto-nome { font-size: 30px; }
   .rodape-contato { flex-direction: row; gap: 24px; }
