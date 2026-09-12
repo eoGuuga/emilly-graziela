@@ -7,6 +7,7 @@
 <meta name="description" content="Doces decorados sob encomenda, com o tema da sua festa. Monte o pedido e envie pelo WhatsApp.">
 <meta name="theme-color" content="#F4B9C4">
 <link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -57,7 +58,6 @@
   <section class="catalogo catalogo--rosa">
     <div class="faixa faixa--rosa"><h2>Doces avulsos</h2></div>
     <div class="interno">
-      <p class="catalogo-nota">Vendidos por unidade.</p>
       <ul class="grade" id="lista-avulsos"></ul>
     </div>
   </section>
@@ -107,6 +107,7 @@
             <label for="obs">Quer deixar alguma observação? <span class="opcional">(opcional)</span></label>
             <textarea id="obs" name="obs" rows="3" placeholder="Tema da festa, cores, alguma restrição alimentar."></textarea>
           </p>
+          <p class="erro" id="erro-minimo" hidden></p>
           <button type="submit" class="botao-enviar">Enviar pedido no WhatsApp</button>
           <p class="form-nota">O pedido abre no WhatsApp já escrito. Nada é cobrado aqui.</p>
         </form>

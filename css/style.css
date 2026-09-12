@@ -144,6 +144,10 @@ a { color: inherit; }
   margin-top: 4px;
 }
 
+/* regra de venda, tipo "por unidade" ou o pedido mínimo.
+   fica colada no preço porque é leitura do preço, não do produto */
+.produto-regra { font-size: 13px; color: var(--fraca); margin-top: -3px; }
+
 /* o item sob orçamento nunca vai ter número, então o card é outro objeto */
 .produto--orcamento { border-color: var(--tinta); }
 .produto--orcamento .produto-corpo { background: var(--rosa-fraco); }
@@ -177,7 +181,9 @@ a { color: inherit; }
   font-size: 19px;
 }
 
-.orcamento-marcar {
+/* serve pro pacote fechado e pro item sob orçamento, que entram
+   uma vez só em vez de ter contador */
+.marcar {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -186,7 +192,7 @@ a { color: inherit; }
   cursor: pointer;
 }
 
-.orcamento-marcar input { width: 21px; height: 21px; accent-color: var(--tinta); }
+.marcar input { width: 21px; height: 21px; accent-color: var(--tinta); }
 
 /* pedido */
 

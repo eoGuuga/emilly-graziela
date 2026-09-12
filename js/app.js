@@ -16,11 +16,10 @@
   const acharProduto = id => PRODUTOS.find(p => p.id === id);
   const link = texto => 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(texto);
 
-  // o biscoito é sob orçamento pela natureza dele, não porque está sem preço.
-  // enquanto a tabela nova não chega o resto também está null, daí a diferença
-  // ter que sair do id e não do preco
+  // o biscoito é sob orçamento pela natureza dele, não por falta de preço
   const ehOrcamento = p => p.id === SOB_ORCAMENTO;
   const temPreco = p => typeof p.preco === 'number';
+  const minimoDe = p => p.minimo || 1;
 
   function moeda(valor) {
     const [inteiro, centavos] = valor.toFixed(2).split('.');
@@ -47,19 +46,23 @@
     return n;
   }
 
-  function foto(produto) {
-    if (produto.imagem) {
-      const img = el('img', 'produto-foto');
-      img.src = produto.imagem;
-      img.loading = 'lazy';
-      img.alt = produto.nome + '. ' + produto.descricao;
-      return img;
-    }
-    // enquanto não tem foto, o slot fica com a proporção reservada
-    // pra nada pular de lugar quando as fotos entrarem
+  function slotVazio() {
     const vazio = el('div', 'produto-foto produto-foto--vazia');
     vazio.append(el('span', 'produto-foto-aviso', 'Foto em breve'));
     return vazio;
+  }
+
+  function foto(produto) {
+    if (!produto.imagem) return slotVazio();
+
+    const img = el('img', 'produto-foto');
+    img.src = 'img/' + produto.imagem;
+    img.loading = 'lazy';
+    img.alt = produto.alt;
+    // se o arquivo ainda não estiver em img/, cai no slot vazio em vez
+    // de deixar o ícone de imagem quebrada estourando o card
+    img.onerror = () => img.replaceWith(slotVazio());
+    return img;
   }
 
   function stepper(produto) {
@@ -69,8 +72,8 @@
     const mais = el('button', 'stepper-botao', '+');
 
     menos.type = mais.type = 'button';
-    menos.setAttribute('aria-label', 'Tirar um ' + produto.nome);
-    mais.setAttribute('aria-label', 'Somar um ' + produto.nome);
+    menos.setAttribute('aria-label', 'Tirar de ' + produto.nome);
+    mais.setAttribute('aria-label', 'Somar em ' + produto.nome);
     qtd.id = 'qtd-' + produto.id;
 
     menos.onclick = () => mudar(produto.id, -1);
@@ -80,8 +83,23 @@
     return wrap;
   }
 
+  // pacote de quantidade fixa entra uma vez só, sem contador de unidade
+  function incluirPacote(produto) {
+    const marcar = el('label', 'marcar');
+    const check = el('input');
+    check.type = 'checkbox';
+    check.id = 'pacote-' + produto.id;
+    check.onchange = () => {
+      if (check.checked) quantidades[produto.id] = 1;
+      else delete quantidades[produto.id];
+      atualizar();
+    };
+    marcar.append(check, el('span', null, 'Incluir no pedido'));
+    return marcar;
+  }
+
   function marcarOrcamento(produto) {
-    const marcar = el('label', 'orcamento-marcar');
+    const marcar = el('label', 'marcar');
     const check = el('input');
     check.type = 'checkbox';
     check.id = 'orcamento-' + produto.id;
@@ -97,10 +115,8 @@
     const li = el('li', 'produto');
     const corpo = el('div', 'produto-corpo');
 
-    corpo.append(
-      el('h3', 'produto-nome', produto.nome),
-      el('p', 'produto-desc', produto.descricao)
-    );
+    corpo.append(el('h3', 'produto-nome', produto.nome));
+    if (produto.descricao) corpo.append(el('p', 'produto-desc', produto.descricao));
 
     if (ehOrcamento(produto)) {
       li.className = 'produto produto--orcamento';
@@ -109,10 +125,22 @@
         marcarOrcamento(produto)
       );
     } else if (temPreco(produto)) {
-      corpo.append(el('p', 'produto-preco', moeda(produto.preco)), stepper(produto));
+      corpo.append(el('p', 'produto-preco', moeda(produto.preco)));
+
+      if (produto.fechado) {
+        corpo.append(incluirPacote(produto));
+      } else {
+        if (produto.categoria !== 'kit') {
+          const min = minimoDe(produto);
+          corpo.append(el('p', 'produto-regra', min > 1
+            ? 'Por unidade, pedido mínimo de ' + min + ' unidades.'
+            : 'Por unidade.'));
+        }
+        corpo.append(stepper(produto));
+      }
     } else {
-      // tabela de preço ainda não voltou: sem valor e sem stepper.
-      // não invento "consulte" nem "a partir de", fica só o produto.
+      // rede de proteção pra preço que faltou: sem valor e sem stepper,
+      // calado. nada de "consulte" nem "a partir de"
       li.className = 'produto produto--sem-preco';
     }
 
@@ -121,12 +149,22 @@
   }
 
   function mudar(id, delta) {
-    const novo = Math.max(0, (quantidades[id] || 0) + delta);
-    if (novo === 0) {
-      delete quantidades[id];
+    const min = minimoDe(acharProduto(id));
+    const atual = quantidades[id] || 0;
+    let novo;
+
+    if (delta > 0) {
+      // o primeiro toque pula direto pro mínimo, dali em diante anda de 1 em 1
+      novo = atual === 0 ? min : atual + 1;
     } else {
-      quantidades[id] = novo;
+      novo = atual - 1;
+      // abaixo do mínimo não existe quantidade válida, então volta pra zero
+      if (novo < min) novo = 0;
     }
+
+    if (novo === 0) delete quantidades[id];
+    else quantidades[id] = novo;
+
     $('qtd-' + id).textContent = novo;
     atualizar();
   }
@@ -138,6 +176,10 @@
   }
 
   const somar = itens => itens.reduce((total, i) => total + i.subtotal, 0);
+
+  // o stepper já não deixa chegar aqui, mas se chegar o envio para
+  const abaixoDoMinimo = () =>
+    itensEscolhidos().filter(i => i.qtd < minimoDe(i.produto));
 
   function atualizar() {
     const itens = itensEscolhidos();
@@ -154,7 +196,9 @@
       const linha = el('li', 'resumo-linha');
       linha.append(
         el('span', 'resumo-nome', i.produto.nome),
-        el('span', 'resumo-qtd', i.qtd + ' x ' + moeda(i.produto.preco)),
+        el('span', 'resumo-qtd', i.produto.fechado
+          ? 'pacote fechado'
+          : i.qtd + ' x ' + moeda(i.produto.preco)),
         el('span', 'resumo-sub', moeda(i.subtotal))
       );
       resumo.append(linha);
@@ -170,8 +214,7 @@
       resumo.append(linha);
     }
 
-    // sem nada somado não faz sentido mostrar "Total R$ 0,00".
-    // a conta continua a mesma, só não aparece.
+    // sem nada somado não faz sentido mostrar "Total R$ 0,00"
     $('total-linha').hidden = total === 0;
     $('total-valor').textContent = moeda(total);
 
@@ -218,8 +261,10 @@
     if (itens.length > 0) {
       linhas.push('Pedido:');
       itens.forEach(i => {
-        linhas.push('- ' + i.produto.nome + ': ' + i.qtd + ' x ' +
-                    moeda(i.produto.preco) + ' = ' + moeda(i.subtotal));
+        // pacote fechado não tem "x quantidade", o preço já é do pacote inteiro
+        linhas.push('- ' + i.produto.nome + ': ' + (i.produto.fechado
+          ? moeda(i.subtotal)
+          : i.qtd + ' x ' + moeda(i.produto.preco) + ' = ' + moeda(i.subtotal)));
       });
       linhas.push('');
       linhas.push('Total: ' + moeda(total));
@@ -245,6 +290,7 @@
   const form = $('form-pedido');
   const campoData = $('data-festa');
   const erroData = $('erro-data');
+  const erroMinimo = $('erro-minimo');
 
   // a encomenda é pra uma data futura, mas a antecedência mínima ela ainda
   // não me passou, então só bloqueio data que já passou
@@ -257,6 +303,16 @@
 
   form.onsubmit = e => {
     e.preventDefault();
+
+    const faltando = abaixoDoMinimo();
+    if (faltando.length > 0) {
+      erroMinimo.textContent = faltando
+        .map(i => i.produto.nome + ' precisa de no mínimo ' + minimoDe(i.produto) + ' unidades.')
+        .join(' ');
+      erroMinimo.hidden = false;
+      return;
+    }
+    erroMinimo.hidden = true;
 
     if (!campoData.value) {
       erroData.hidden = false;
