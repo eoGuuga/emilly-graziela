@@ -8,6 +8,7 @@
   const WHATSAPP = '5511960834829';
   const PIX = 0.05;
   const SOB_ORCAMENTO = 'biscoito-decorado';
+  const DIAS_MINIMOS = 15;
 
   const quantidades = {};
   let querOrcamento = false;
@@ -20,6 +21,9 @@
   const ehOrcamento = p => p.id === SOB_ORCAMENTO;
   const temPreco = p => typeof p.preco === 'number';
   const minimoDe = p => p.minimo || 1;
+
+  // plural ingênuo, dá conta das palavras que a gente usa aqui
+  const plural = (palavra, n) => (n === 1 ? palavra : palavra + 's');
 
   function moeda(valor) {
     const [inteiro, centavos] = valor.toFixed(2).split('.');
@@ -37,6 +41,25 @@
     const mes = String(d.getMonth() + 1).padStart(2, '0');
     const dia = String(d.getDate()).padStart(2, '0');
     return d.getFullYear() + '-' + mes + '-' + dia;
+  }
+
+  // conta os dias em data local, com as duas pontas fixadas ao meio-dia.
+  // é a mesma armadilha do new Date: montar em UTC ou na meia-noite faz
+  // virada de fuso e horário de verão empurrarem o resultado um dia
+  function diasAte(iso) {
+    const [ano, mes, dia] = iso.split('-').map(Number);
+    const agora = new Date();
+    const alvo = new Date(ano, mes - 1, dia, 12);
+    const inicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 12);
+    return Math.round((alvo - inicio) / 86400000);
+  }
+
+  const foraDoPrazo = iso => Boolean(iso) && diasAte(iso) < DIAS_MINIMOS;
+
+  function textoPrazo(dias) {
+    if (dias <= 0) return 'a festa é hoje';
+    if (dias === 1) return 'falta 1 dia';
+    return 'faltam ' + dias + ' dias';
   }
 
   function el(tag, classe, texto) {
@@ -65,6 +88,22 @@
     return img;
   }
 
+  // "Por unidade." no normal, "Por torre." na Torre, mais o mínimo quando tem
+  function regraDeVenda(produto) {
+    const un = produto.unidade || 'unidade';
+    const min = minimoDe(produto);
+    return min > 1
+      ? 'Por ' + un + ', pedido mínimo de ' + min + ' ' + plural(un, min) + '.'
+      : 'Por ' + un + '.';
+  }
+
+  // a Torre conta torres e não donuts, então a quantidade sai nomeada
+  function textoQtd(item) {
+    const un = item.produto.unidade;
+    const contagem = un ? item.qtd + ' ' + plural(un, item.qtd) : String(item.qtd);
+    return contagem + ' x ' + moeda(item.produto.preco);
+  }
+
   function stepper(produto) {
     const wrap = el('div', 'stepper');
     const menos = el('button', 'stepper-botao', '−');
@@ -81,21 +120,6 @@
 
     wrap.append(menos, qtd, mais);
     return wrap;
-  }
-
-  // pacote de quantidade fixa entra uma vez só, sem contador de unidade
-  function incluirPacote(produto) {
-    const marcar = el('label', 'marcar');
-    const check = el('input');
-    check.type = 'checkbox';
-    check.id = 'pacote-' + produto.id;
-    check.onchange = () => {
-      if (check.checked) quantidades[produto.id] = 1;
-      else delete quantidades[produto.id];
-      atualizar();
-    };
-    marcar.append(check, el('span', null, 'Incluir no pedido'));
-    return marcar;
   }
 
   function marcarOrcamento(produto) {
@@ -126,20 +150,13 @@
       );
     } else if (temPreco(produto)) {
       corpo.append(el('p', 'produto-preco', moeda(produto.preco)));
-
-      if (produto.fechado) {
-        corpo.append(incluirPacote(produto));
-      } else {
-        if (produto.categoria !== 'kit') {
-          const min = minimoDe(produto);
-          corpo.append(el('p', 'produto-regra', min > 1
-            ? 'Por unidade, pedido mínimo de ' + min + ' unidades.'
-            : 'Por unidade.'));
-        }
-        corpo.append(stepper(produto));
+      // no kit o preço é do kit inteiro, não cabe "por unidade"
+      if (produto.categoria !== 'kit') {
+        corpo.append(el('p', 'produto-regra', regraDeVenda(produto)));
       }
+      corpo.append(stepper(produto));
     } else {
-      // rede de proteção pra preço que faltou: sem valor e sem stepper,
+      // rede de proteção pra preço que faltou: sem valor e sem contador,
       // calado. nada de "consulte" nem "a partir de"
       li.className = 'produto produto--sem-preco';
     }
@@ -177,7 +194,7 @@
 
   const somar = itens => itens.reduce((total, i) => total + i.subtotal, 0);
 
-  // o stepper já não deixa chegar aqui, mas se chegar o envio para
+  // o contador já não deixa chegar aqui, mas se chegar o envio para
   const abaixoDoMinimo = () =>
     itensEscolhidos().filter(i => i.qtd < minimoDe(i.produto));
 
@@ -196,9 +213,7 @@
       const linha = el('li', 'resumo-linha');
       linha.append(
         el('span', 'resumo-nome', i.produto.nome),
-        el('span', 'resumo-qtd', i.produto.fechado
-          ? 'pacote fechado'
-          : i.qtd + ' x ' + moeda(i.produto.preco)),
+        el('span', 'resumo-qtd', textoQtd(i)),
         el('span', 'resumo-sub', moeda(i.subtotal))
       );
       resumo.append(linha);
@@ -239,6 +254,7 @@
     // conto "itens" e não "doces" porque um kit é 1 item mas vem com vários doces dentro
     let rotulo = 'Orçamento de biscoito';
     if (pecas > 0) {
+      // "item" tem plural irregular, não passa pelo helper
       rotulo = pecas + (pecas === 1 ? ' item' : ' itens');
       if (querOrcamento) rotulo += ' mais orçamento';
     }
@@ -256,15 +272,20 @@
 
     linhas.push('Data da festa: ' + dataBR(dataFesta));
     linhas.push('Já sei que é retirada, você não faz entrega.');
+
+    // ela aceita pedido abaixo do prazo, mas quer ver isso sinalizado
+    // antes de responder. sem número de taxa, que ela não passou
+    if (foraDoPrazo(dataFesta)) {
+      linhas.push('Atenção: ' + textoPrazo(diasAte(dataFesta)) +
+                  ', menos que os 15 dias de antecedência. Me avisa se tem taxa de urgência.');
+    }
+
     linhas.push('');
 
     if (itens.length > 0) {
       linhas.push('Pedido:');
       itens.forEach(i => {
-        // pacote fechado não tem "x quantidade", o preço já é do pacote inteiro
-        linhas.push('- ' + i.produto.nome + ': ' + (i.produto.fechado
-          ? moeda(i.subtotal)
-          : i.qtd + ' x ' + moeda(i.produto.preco) + ' = ' + moeda(i.subtotal)));
+        linhas.push('- ' + i.produto.nome + ': ' + textoQtd(i) + ' = ' + moeda(i.subtotal));
       });
       linhas.push('');
       linhas.push('Total: ' + moeda(total));
@@ -291,14 +312,16 @@
   const campoData = $('data-festa');
   const erroData = $('erro-data');
   const erroMinimo = $('erro-minimo');
+  const avisoPrazo = $('aviso-prazo');
 
-  // a encomenda é pra uma data futura, mas a antecedência mínima ela ainda
-  // não me passou, então só bloqueio data que já passou
+  // só bloqueia data que já passou. menos de 15 dias ela aceita, então
+  // ali é aviso e não trava
   campoData.min = hoje();
 
   campoData.oninput = () => {
     erroData.hidden = true;
     campoData.removeAttribute('aria-invalid');
+    avisoPrazo.hidden = !foraDoPrazo(campoData.value);
   };
 
   form.onsubmit = e => {
@@ -307,7 +330,8 @@
     const faltando = abaixoDoMinimo();
     if (faltando.length > 0) {
       erroMinimo.textContent = faltando
-        .map(i => i.produto.nome + ' precisa de no mínimo ' + minimoDe(i.produto) + ' unidades.')
+        .map(i => i.produto.nome + ' precisa de no mínimo ' + minimoDe(i.produto) + ' ' +
+                  plural(i.produto.unidade || 'unidade', minimoDe(i.produto)) + '.')
         .join(' ');
       erroMinimo.hidden = false;
       return;

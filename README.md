@@ -30,21 +30,36 @@ outro arquivo.
 Tabela válida: WhatsApp e áudios da Emilly, 11 e 12/09/2026. O arquivo
 `originais/precos-2025-referencia.txt` é só histórico, não tirar preço de lá.
 
-Três modos de venda, definidos por campo:
+Dois campos definem como o item é vendido:
 
-- **Por unidade.** É o padrão, `minimo: 1`. Contador comum.
-- **Com mínimo.** `minimo: 50` no brigadeiro e `minimo: 30` no cake donut.
-  O contador começa em 0, o primeiro toque pula direto pro mínimo e dali anda
-  de 1 em 1. Descendo abaixo do mínimo volta pra 0, nunca para em quantidade
-  inválida, e o envio fica bloqueado se algo passar.
-- **Pacote fechado.** `fechado: true` no Cento Variado e na Torre de Donuts.
-  Quantidade fixa, entra uma vez e não tem contador de unidade.
+- `minimo` é a quantidade mínima, 1 quando não tem regra. Hoje são três: 50 no
+  Brigadeiro Personalizado, 30 no Cake Donut e 25 no Cento Variado. O contador
+  começa em 0, o primeiro toque pula direto pro mínimo e dali anda de 1 em 1.
+  Descendo abaixo do mínimo volta pra 0, nunca para em quantidade inválida, e o
+  envio trava se algo escapar.
+- `unidade` nomeia o que o contador conta, quando não é unidade solta. Só a Torre
+  de Donuts usa, com `unidade: 'torre'`, porque ali o contador conta torres e não
+  donuts. Os 30 donuts por torre são fixos e não editáveis.
 
 O Biscoito Decorado é `preco: null`, sob orçamento por natureza. Nunca vai ter
 preço fixo e nunca entra na soma. Quem separa ele dos outros é o id.
 
 Se algum item ficar sem preço por falta de dado, o card renderiza calado, sem
 valor e sem contador. É rede de proteção, não estado esperado.
+
+Os nomes "Cento Variado" e "Cento de Brigadeiro Personalizado" podem mudar, já que
+nenhum dos dois exige 100 unidades. Trocar só o campo `nome`, nada mais depende dele.
+
+## Prazo
+
+15 dias de antecedência para doces personalizados. Prazo menor ela aceita, então a
+página avisa em vez de bloquear: data com menos de 15 dias mostra um recado perto do
+campo, e a mensagem do WhatsApp sai com uma linha sinalizando, pra ela ver antes de
+responder. Nenhum valor de taxa de urgência aparece em lugar nenhum, ela não passou
+número.
+
+A conta de dias é feita em data local com as duas pontas fixadas ao meio-dia. Montar
+em UTC ou na meia-noite faz virada de fuso empurrar o resultado um dia.
 
 ## Fotos
 

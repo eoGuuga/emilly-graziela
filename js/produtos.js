@@ -2,15 +2,16 @@
 // O originais/precos-2025-referencia.txt é só histórico, não tirar preço de lá.
 // Pra mexer em preço é só o campo preco aqui, não tem valor em outro arquivo.
 //
-// minimo      quantidade mínima de unidades, 1 quando o item não tem regra
-// fechado     pacote de quantidade fixa, entra uma vez só e não tem stepper
+// minimo      quantidade mínima, 1 quando o item não tem regra
+// unidade     o que o contador conta, quando não é unidade solta. a Torre conta
+//             torres e não donuts, por isso unidade: 'torre'. vazio é o normal
 // preco       null só no biscoito, que é sob orçamento por natureza. se outro
-//             item ficar null, o card sai sem preço e sem stepper, em silêncio
+//             item ficar null, o card sai sem preço e sem contador, em silêncio
 // alt         escrito à mão, descreve a técnica e nunca o personagem
 // observacao  recado meu, não aparece na página
 //
 // Atenção: as descrições do Pão de Mel de Mesa, 2D, 3D, Paleta, Pirulito e Trufa
-// ainda são as do cardápio de 2025. Ela reconfirmou só os preços. Conferir.
+// ainda são as do cardápio de 2025. Ela reconfirmou só os preços e vai revisar.
 
 const PRODUTOS = [
   {
@@ -22,7 +23,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'avulso',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: ''
   },
   {
@@ -34,7 +35,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'avulso',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: ''
   },
   {
@@ -46,7 +47,7 @@ const PRODUTOS = [
     alt: 'pães de mel 3D decorados em pasta americana, com canudo e laço de fita',
     categoria: 'avulso',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: ''
   },
   {
@@ -58,7 +59,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'avulso',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: ''
   },
   {
@@ -70,7 +71,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'avulso',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: 'Ela renomeou, antes era só "Pirulito".'
   },
   {
@@ -82,7 +83,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'avulso',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: ''
   },
   {
@@ -94,8 +95,8 @@ const PRODUTOS = [
     alt: 'brigadeiros com carinha de bichinho modelada em pasta americana',
     categoria: 'avulso',
     minimo: 50,
-    fechado: false,
-    observacao: 'Ela passou só preço e mínimo, não passou descrição.'
+    unidade: '',
+    observacao: 'Sem descrição ainda, ela ficou de mandar uma frase. O nome pode mudar, porque não exige 100 e briga com o mínimo no mesmo card. Trocar só aqui no nome.'
   },
   {
     id: 'cake-donut',
@@ -106,20 +107,20 @@ const PRODUTOS = [
     alt: 'mini donuts cobertos com chocolate rosa e branco, decorados com confeitos',
     categoria: 'avulso',
     minimo: 30,
-    fechado: false,
-    observacao: 'Ela passou só preço e mínimo, não passou descrição. Não confundir com o antigo Donuts no Palito, que saiu do catálogo.'
+    unidade: '',
+    observacao: 'Sem descrição ainda, ela ficou de mandar uma frase. Não confundir com o antigo Donuts no Palito, que saiu do catálogo.'
   },
   {
     id: 'cento-variado',
     nome: 'Cento Variado',
     descricao: 'Sabores a consultar.',
-    preco: 300.00,
+    preco: 3.00,
     imagem: 'cento-variado.jpg',
     alt: 'docinhos variados de brigadeiro gourmet em forminhas',
     categoria: 'avulso',
-    minimo: 1,
-    fechado: true,
-    observacao: 'PENDENTE: ela falou em vender a partir de 25 unidades mas não passou o preço unitário pra quantidade menor. Até confirmar é pacote fechado de 100. Não dividir 300 por 100 pra inventar unitário.'
+    minimo: 25,
+    unidade: '',
+    observacao: 'R$ 3,00 x 100 fecha nos R$ 300,00 do cento. O nome pode mudar, porque o mínimo é 25 e não 100. Trocar só aqui no nome.'
   },
   {
     id: 'torre-de-donuts',
@@ -130,8 +131,8 @@ const PRODUTOS = [
     alt: '',
     categoria: 'avulso',
     minimo: 1,
-    fechado: true,
-    observacao: ''
+    unidade: 'torre',
+    observacao: 'O contador conta torres, não donuts. Os 30 donuts por torre são fixos.'
   },
   {
     id: 'biscoito-decorado',
@@ -142,7 +143,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'avulso',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: 'Sob orçamento de verdade, nunca vai ter preço fixo e nunca entra na soma.'
   },
   {
@@ -154,7 +155,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'kit',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: ''
   },
   {
@@ -166,7 +167,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'kit',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: ''
   },
   {
@@ -178,7 +179,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'kit',
     minimo: 1,
-    fechado: false,
+    unidade: '',
     observacao: ''
   }
 ];

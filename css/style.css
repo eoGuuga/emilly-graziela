@@ -181,8 +181,7 @@ a { color: inherit; }
   font-size: 19px;
 }
 
-/* serve pro pacote fechado e pro item sob orçamento, que entram
-   uma vez só em vez de ter contador */
+/* o item sob orçamento entra marcado em vez de contado */
 .marcar {
   display: flex;
   align-items: center;
@@ -256,6 +255,15 @@ a { color: inherit; }
 
 .opcional { font-weight: normal; color: var(--fraca); }
 .erro { font-size: 14px; color: #A03027; }
+
+/* aviso de prazo curto: ela aceita o pedido, então é recado e não erro */
+.aviso-prazo {
+  font-size: 14px;
+  line-height: 1.45;
+  padding: 9px 11px;
+  background: var(--rosa-fraco);
+  border-left: 3px solid var(--rosa);
+}
 
 .botao-enviar {
   min-height: 50px;
