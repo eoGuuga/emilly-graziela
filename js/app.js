@@ -546,6 +546,11 @@
   /* ---- bolos: tabela e caminho pra conversa, sem contador ---- */
 
   function montarBolos() {
+    // a foto da seção: o mesmo carrossel do card, sem nome nem preço embaixo
+    if (BOLOS.fotos && BOLOS.fotos.length) {
+      $('bolos-foto').append(foto({ id: 'bolos', nome: 'Bolos', fotos: BOLOS.fotos }, false));
+    }
+
     const linhas = $('bolos-linhas');
     BOLOS.linhas.forEach(b => {
       const tr = el('tr');

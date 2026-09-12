@@ -3,8 +3,9 @@
 // preco     valor em reais, ou null quando o item é sob orçamento
 // minimo    quantidade mínima, 1 quando o item não tem regra de mínimo
 // unidade   o que o contador conta, quando não é unidade solta
-// fotos     lista de fotos do produto. A primeira é a do card, as outras só
-//           aparecem na tela cheia. Cada foto tem:
+// fotos     lista de fotos do produto. A primeira é a do card; as outras
+//           aparecem arrastando a foto do card de lado e na tela cheia. O nome
+//           do arquivo diz o conteúdo, não a posição. Cada foto tem:
 //             arquivo  nome do arquivo, que existe em img/card/ e em img/galeria/
 //             alt      texto alternativo, descreve a técnica
 //             foco     opcional, onde o recorte 4:5 se prende. "50% 50%" é o
@@ -32,7 +33,12 @@ const PRODUTOS = [
     minimo: 1,
     unidade: '',
     fotos: [
-      { arquivo: 'pao-de-mel-2d.jpg', alt: 'pães de mel quadrados decorados em pasta americana, com canudo de papel e laço de fita' }
+      { arquivo: 'pao-de-mel-2d.jpg', alt: 'pães de mel quadrados decorados em pasta americana, com canudo de papel e laço de fita' },
+      { arquivo: 'pao-de-mel-2d-ursinho.jpg', alt: 'pão de mel quadrado com ursinho em pasta americana e laço branco' },
+      { arquivo: 'pao-de-mel-2d-pinguins.jpg', alt: 'pães de mel quadrados com pinguins, decorados em pasta americana' },
+      { arquivo: 'pao-de-mel-2d-abelhas.jpg', alt: 'pão de mel quadrado com ursinho, abelhas e favos de mel, com canudo e laço' },
+      { arquivo: 'pao-de-mel-2d-sol.jpg', alt: 'pães de mel quadrados de tema sol, com laços de fita laranja' },
+      { arquivo: 'pao-de-mel-2d-cha-de-bebe.jpg', alt: 'pães de mel quadrados de chá de bebê, com ursinhos e laços' }
     ]
   },
   {
@@ -44,7 +50,10 @@ const PRODUTOS = [
     minimo: 1,
     unidade: '',
     fotos: [
-      { arquivo: 'pao-de-mel-3d.jpg', alt: 'pão de mel 3D em formato de casinha, modelado em pasta americana', foco: '50% 40%' }
+      { arquivo: 'pao-de-mel-3d.jpg', alt: 'pão de mel 3D em formato de casinha, modelado em pasta americana', foco: '50% 40%' },
+      { arquivo: 'pao-de-mel-3d-capa-vermelha.jpg', alt: 'pão de mel 3D com menina de capa vermelha modelada em pasta americana' },
+      { arquivo: 'pao-de-mel-3d-ursinho.jpg', alt: 'pão de mel 3D com ursinho modelado sobre base decorada' },
+      { arquivo: 'pao-de-mel-3d-ursinho-base-azul.jpg', alt: 'pão de mel 3D com ursinho modelado sobre base azul' }
     ]
   },
   {
@@ -68,7 +77,10 @@ const PRODUTOS = [
     minimo: 1,
     unidade: '',
     fotos: [
-      { arquivo: 'pirulito-personalizado.jpg', alt: 'pirulitos de chocolate redondos, decorados em 2D com canudo e laço de fita' }
+      { arquivo: 'pirulito-personalizado.jpg', alt: 'pirulitos de chocolate redondos, decorados em 2D com canudo e laço de fita' },
+      { arquivo: 'pirulito-dinossauros.jpg', alt: 'pirulitos de chocolate redondos com dinossauros em pasta americana' },
+      { arquivo: 'pirulito-cha-de-bebe.jpg', alt: 'pirulitos redondos de chá de bebê, com roupinhas em pasta americana' },
+      { arquivo: 'pirulito-ursinhos.jpg', alt: 'pirulitos redondos com ursinhos, em rosa e verde-água' }
     ]
   },
   {
@@ -92,7 +104,9 @@ const PRODUTOS = [
     minimo: 25,
     unidade: '',
     fotos: [
-      { arquivo: 'doces-gourmet.jpg', alt: 'docinhos gourmet variados em forminhas' }
+      { arquivo: 'doces-gourmet.jpg', alt: 'docinhos gourmet variados em forminhas' },
+      { arquivo: 'doces-gourmet-confeitos.jpg', alt: 'docinhos gourmet variados com confeitos coloridos' },
+      { arquivo: 'doces-gourmet-bandeja.jpg', alt: 'bandeja de docinhos gourmet variados em forminhas' }
     ]
   },
   {
@@ -104,7 +118,8 @@ const PRODUTOS = [
     minimo: 50,
     unidade: '',
     fotos: [
-      { arquivo: 'doces-gourmet-personalizados.jpg', alt: 'docinhos com carinha de bichinho modelada em pasta americana', foco: '50% 60%' }
+      { arquivo: 'doces-gourmet-personalizados.jpg', alt: 'docinhos com carinha de bichinho modelada em pasta americana', foco: '50% 60%' },
+      { arquivo: 'doces-gourmet-personalizados-bandeja.jpg', alt: 'bandeja de docinhos com carinha de bichinho em pasta americana' }
     ]
   },
   {
@@ -140,7 +155,9 @@ const PRODUTOS = [
     minimo: 1,
     unidade: '',
     fotos: [
-      { arquivo: 'biscoito-decorado.jpg', alt: 'biscoitos decorados em glacê real, com laço de fita e embalagem' }
+      { arquivo: 'biscoito-decorado.jpg', alt: 'biscoitos decorados em glacê real, com laço de fita e embalagem' },
+      { arquivo: 'biscoito-decorado-embalado.jpg', alt: 'biscoitos decorados em glacê real, embalados com laço e tag' },
+      { arquivo: 'biscoito-decorado-ovelhinha.jpg', alt: 'biscoito decorado em formato de ovelhinha, no palito com laço' }
     ]
   },
   {
@@ -152,7 +169,8 @@ const PRODUTOS = [
     minimo: 1,
     unidade: '',
     fotos: [
-      { arquivo: 'kit-festa-p.jpg', alt: 'doces variados de um kit de festa, decorados no mesmo tema' }
+      { arquivo: 'kit-festa-p.jpg', alt: 'doces variados de um kit de festa, decorados no mesmo tema' },
+      { arquivo: 'kit-festa-p-mesa.jpg', alt: 'doces variados de um kit de festa, decorados no mesmo tema' }
     ]
   },
   {
@@ -178,9 +196,14 @@ const PRODUTOS = [
 ];
 
 // Bolos ficam fora do pedido da página: sabor, peso e tema são conversa.
-// A seção mostra a tabela e leva pro WhatsApp. precoKg é o valor por quilo.
+// A seção mostra as fotos (mesmo formato dos produtos), a tabela e leva pro
+// WhatsApp. precoKg é o valor por quilo.
 
 const BOLOS = {
+  fotos: [
+      { arquivo: 'bolo-morangos.jpg', alt: 'bolo decorado com morangos e raspas de chocolate branco' },
+      { arquivo: 'bolo-raspas-de-chocolate.jpg', alt: 'bolo decorado com raspas de chocolate ao leite' }
+  ],
   linhas: [
     { tipo: 'Bolos tradicionais', precoKg: 110.00, sabores: 'prestígio, brigadeiro, ninho, doce de leite' },
     { tipo: 'Bolos com frutas', precoKg: 140.00, sabores: 'abacaxi com doce de leite, chocolate com morango, maracujá com brigadeiro, ameixa com doce de leite, morango com ninho, abacaxi com coco e doce de leite' },

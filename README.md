@@ -67,9 +67,9 @@ fotos custa uma foto até alguém mexer nela.
 
 ## Bolos
 
-Seção própria, depois dos kits. É tabela de preço por quilo e um caminho para o
-WhatsApp, sem contador e sem soma: sabor, peso e tema são combinados na conversa.
-Os dados ficam em `BOLOS`, no `js/produtos.js`.
+Seção própria, depois dos kits. Duas fotos no mesmo carrossel dos produtos, a tabela
+de preço por quilo e um caminho para o WhatsApp, sem contador e sem soma: sabor, peso
+e tema são combinados na conversa. Os dados ficam em `BOLOS`, no `js/produtos.js`.
 
 ## Prazo
 

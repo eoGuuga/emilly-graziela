@@ -314,6 +314,10 @@ h2 {
 .tabela thead th { font-size: 13px; font-weight: 600; color: var(--fraca); padding-top: 0; }
 .tabela tbody th { font-family: var(--serifa); font-weight: 600; font-size: 17px; white-space: nowrap; }
 .tabela .preco { font-size: 19px; }
+/* a foto dos bolos: o carrossel do card, entre a nota e a tabela */
+.bolos-foto { margin-top: 22px; }
+.bolos-foto:empty { display: none; }
+
 .tabela--curta { max-width: 18rem; margin-top: 32px; }
 .tabela--curta td:last-child { text-align: right; }
 
