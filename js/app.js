@@ -12,8 +12,7 @@
   const LIMITE_OBS = 300;
   const AVISA_OBS = 200;
 
-  // a torre é vertical. no 3:2 dos outros ela vira um monte de donuts empilhados
-  // e a forma de torre some, então é a única que usa 1:1 no card
+  // ids cuja foto usa 1:1 em vez do 3:2 padrão
   const FOTO_ALTA = ['torre-de-donuts'];
 
   const quantidades = {};
@@ -23,7 +22,7 @@
   const acharProduto = id => PRODUTOS.find(p => p.id === id);
   const link = texto => 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(texto);
 
-  // o biscoito é sob orçamento pela natureza dele, não por falta de preço
+  // quem é sob orçamento vem do id, não do preco null
   const ehOrcamento = p => p.id === SOB_ORCAMENTO;
   const temPreco = p => typeof p.preco === 'number';
   const minimoDe = p => p.minimo || 1;
@@ -104,7 +103,7 @@
       : 'Por ' + un + '.';
   }
 
-  // a Torre conta torres e não donuts, então a quantidade sai nomeada
+  // item com unidade própria tem a quantidade nomeada: "2 torres" e não "2"
   function textoQtd(item) {
     const un = item.produto.unidade;
     const contagem = un ? item.qtd + ' ' + plural(un, item.qtd) : String(item.qtd);
@@ -163,8 +162,7 @@
       }
       corpo.append(stepper(produto));
     } else {
-      // rede de proteção pra preço que faltou: sem valor e sem contador,
-      // calado. nada de "consulte" nem "a partir de"
+      // sem preço: card sem valor e sem contador
       li.className = 'produto produto--sem-preco';
     }
 
@@ -280,8 +278,7 @@
     linhas.push('Data da festa: ' + dataBR(dataFesta));
     linhas.push('Já sei que é retirada, você não faz entrega.');
 
-    // os 15 dias são pra ela organizar a agenda, não são regra rígida.
-    // aqui é sinalizar e perguntar disponibilidade, nunca falar em taxa
+    // abaixo do prazo ideal: sinaliza e pergunta disponibilidade
     if (foraDoPrazo(dataFesta)) {
       linhas.push('Atenção: ' + textoPrazo(diasAte(dataFesta)) +
                   ', menos que os 15 dias de antecedência. Você consegue confirmar se tem disponibilidade?');
@@ -321,8 +318,7 @@
   const erroMinimo = $('erro-minimo');
   const avisoPrazo = $('aviso-prazo');
 
-  // só bloqueia data que já passou. menos de 15 dias ela aceita, então
-  // ali é aviso e não trava
+  // só bloqueia data que já passou; prazo curto é aviso, não trava
   campoData.min = hoje();
 
   campoData.oninput = () => {

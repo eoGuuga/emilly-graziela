@@ -1,12 +1,6 @@
-/* Caderno de encomenda.
-   A página se comporta como a ficha de trabalho dela, não como site.
-   Rosa e azul entram como faixa cheia separando os dois grupos de produto,
-   então a cor divide a leitura em vez de enfeitar. Preço em serifa, grande,
-   que é como preço de cardápio se lê.
-
-   Os pastéis vieram do Logotipo.png. Rosa e azul dão 1,6:1 de contraste no
-   branco, reprovam pra letra, então só aparecem como fundo com a tinta escura
-   por cima. Nessa combinação dá 8,2:1, passa folgado. */
+/* O rosa e o azul da marca dão 1,6:1 de contraste sobre branco, o que
+   reprova para texto. Por isso só entram como fundo, com a tinta escura por
+   cima, combinação que dá 8,2:1. Nunca use os dois como cor de letra. */
 
 :root {
   --papel: #FFFDFA;
@@ -109,12 +103,11 @@ a { color: inherit; }
   object-fit: cover;
 }
 
-/* sem foto ainda, o slot fica no pastel da própria seção
-   e guarda a proporção pra nada pular quando as fotos entrarem */
-/* a torre é vertical: no 3:2 dos outros ela vira um monte de donuts
-   empilhados e a forma de torre some */
+/* exceção de proporção, ver FOTO_ALTA no app.js */
 .produto-foto--alta { aspect-ratio: 1 / 1; }
 
+/* sem foto, o slot fica no pastel da própria seção e guarda a
+   proporção, pra nada pular de lugar quando a foto entrar */
 .produto-foto--vazia {
   display: grid;
   place-items: center;
@@ -148,17 +141,15 @@ a { color: inherit; }
   margin-top: 4px;
 }
 
-/* regra de venda, tipo "por unidade" ou o pedido mínimo.
-   fica colada no preço porque é leitura do preço, não do produto */
+/* "por unidade" ou o pedido mínimo, colado no preço */
 .produto-regra { font-size: 13px; color: var(--fraca); margin-top: -3px; }
 
-/* o item sob orçamento nunca vai ter número, então o card é outro objeto */
+/* o card sem preço fixo é outro objeto */
 .produto--orcamento { border-color: var(--tinta); }
 .produto--orcamento .produto-corpo { background: var(--rosa-fraco); }
 .produto-preco--sob { font-style: italic; font-size: 22px; }
 
-/* enquanto a tabela de preço não volta o card fecha depois da descrição,
-   sem valor e sem stepper */
+/* card sem preço fecha depois da descrição, sem valor e sem stepper */
 .produto--sem-preco .produto-corpo { padding-bottom: 19px; }
 
 /* stepper, 44px de alvo senão erra o toque no celular */
@@ -261,7 +252,7 @@ a { color: inherit; }
 .contador { font-size: 13px; color: var(--fraca); text-align: right; }
 .erro { font-size: 14px; color: #A03027; }
 
-/* aviso de prazo curto: ela aceita o pedido, então é recado e não erro */
+/* prazo curto é aviso e não erro: o envio segue */
 .aviso-prazo {
   font-size: 14px;
   line-height: 1.45;

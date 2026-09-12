@@ -1,11 +1,11 @@
 # Vitrine Bila
 
-Página da Emilly Graziela Candy Design, doces decorados sob encomenda pra festa.
-A cliente abre no celular, escolhe os doces, põe a data da festa e o pedido chega
-escrito no WhatsApp já somado.
+Página da Emilly Graziela Candy Design, doces decorados sob encomenda para festa.
+A cliente abre no celular, escolhe os doces, informa a data da festa e o pedido
+chega escrito no WhatsApp já somado.
 
-HTML, CSS e JS na mão. Sem build, sem npm, sem dependência. Vai pro GitHub Pages
-servindo da raiz.
+HTML, CSS e JS na mão. Sem build, sem npm, sem dependência externa. Vai para o
+GitHub Pages servindo da raiz.
 
 ## Arquivos
 
@@ -15,74 +15,58 @@ servindo da raiz.
     js/app.js              catálogo, pedido e a mensagem do WhatsApp
     img/                   fotos dos produtos e a marca
     favicon.ico            ícone, tirado do monograma
-    apple-touch-icon.png   ícone de 180px pra tela inicial do iPhone
-    originais/             arquivos de origem, ficam fora do Git
+    apple-touch-icon.png   ícone de 180px para a tela inicial do iPhone
 
 ## Rodar
 
-Abre o index.html no navegador. Não precisa de servidor.
+Abrir o `index.html` no navegador. Não precisa de servidor.
 
 ## Mexer nos produtos
 
-Tudo em `js/produtos.js`. Preço fica só no campo `preco`, não tem valor em
-outro arquivo.
-
-Tabela válida: WhatsApp e áudios da Emilly, 11 e 12/09/2026. O arquivo
-`originais/precos-2025-referencia.txt` é só histórico, não tirar preço de lá.
+Tudo em `js/produtos.js`. O preço fica só no campo `preco`, não há valor escrito
+em nenhum outro arquivo. A ordem do array é a ordem da página.
 
 Dois campos definem como o item é vendido:
 
-- `minimo` é a quantidade mínima, 1 quando não tem regra. Hoje são três: 50 no
-  Doces Gourmet Personalizados, 30 no Cake Donut e 25 no Doces Gourmet. O contador
-  começa em 0, o primeiro toque pula direto pro mínimo e dali anda de 1 em 1.
-  Descendo abaixo do mínimo volta pra 0, nunca para em quantidade inválida, e o
-  envio trava se algo escapar.
-- `unidade` nomeia o que o contador conta, quando não é unidade solta. Só a Torre
-  de Donuts usa, com `unidade: 'torre'`, porque ali o contador conta torres e não
-  donuts. Os 30 donuts por torre são fixos e não editáveis.
+- `minimo` é a quantidade mínima, `1` quando não há regra. O contador começa em 0,
+  o primeiro toque pula direto para o mínimo e dali anda de 1 em 1. Descendo abaixo
+  do mínimo volta para 0, nunca para em quantidade inválida, e o envio trava se
+  algo escapar.
+- `unidade` nomeia o que o contador conta, quando não é unidade solta. A Torre de
+  Cake Donuts usa `unidade: 'torre'`, porque ali o contador conta torres e não
+  donuts.
 
-O Biscoito Decorado é `preco: null`, sob orçamento por natureza. Nunca vai ter
-preço fixo e nunca entra na soma. Quem separa ele dos outros é o id.
+`preco: null` marca o item sob orçamento: ele não entra na soma do total e vai para
+a conversa como pedido de orçamento. Quem define isso é o `id`, em `SOB_ORCAMENTO`
+no `app.js`, e não o `null` em si.
 
-Se algum item ficar sem preço por falta de dado, o card renderiza calado, sem
-valor e sem contador. É rede de proteção, não estado esperado.
+Se um item ficar sem preço, o card renderiza sem valor e sem contador, em silêncio.
+É rede de proteção, não estado esperado.
 
-A ordem do array é a ordem da página. Doces Gourmet e Doces Gourmet Personalizados
-ficam colados de propósito: os nomes são parecidos e o preço e o mínimo são
-diferentes, então a comparação precisa ser lado a lado.
-
-Renomear um produto mexe só no campo `nome`. Os `id` continuam os antigos
-(`cento-variado`, `cento-brigadeiro-personalizado`, `torre-de-donuts`) porque nada
-externo depende deles.
+Renomear um produto mexe só no campo `nome`. Os `id` são identificadores internos e
+não precisam acompanhar o nome.
 
 ## Prazo
 
-O ideal é 15 dias de antecedência, que é o prazo que ela usa pra organizar a agenda.
-Não é regra rígida: tendo disponibilidade ela faz de um dia pro outro. Por isso a
-página avisa em vez de bloquear. Data com menos de 15 dias mostra um recado perto do
-campo convidando a consultar disponibilidade, e a mensagem do WhatsApp sai com uma
-linha sinalizando e pedindo confirmação. Nenhum valor aparece em lugar nenhum, e a
-palavra "taxa" não existe no site.
+O prazo ideal de encomenda é de 15 dias. A página avisa em vez de bloquear: data com
+menos de 15 dias mostra um recado perto do campo convidando a consultar
+disponibilidade, e a mensagem do WhatsApp sai com uma linha pedindo confirmação. O
+campo de data só bloqueia data que já passou.
 
 A conta de dias é feita em data local com as duas pontas fixadas ao meio-dia. Montar
 em UTC ou na meia-noite faz virada de fuso empurrar o resultado um dia.
 
 ## Fotos
 
-Uma por produto, em `img/`, nome sem acento e sem espaço, jpg ou webp, no
-máximo 800px de largura. O `alt` é escrito à mão no `produtos.js` e descreve a
-técnica, nunca o personagem.
+Uma por produto, em `img/`, nome sem acento e sem espaço, jpg ou webp, no máximo
+800px de largura, salvas sem EXIF. O `alt` é escrito à mão no `produtos.js` e
+descreve a técnica do doce.
 
-12 dos 14 produtos têm foto. Kit Festa M e Kit Festa G ficam sem, de propósito:
-a composição dos dois mudou e não existe foto que corresponda, então a lista
-escrita é o que explica o produto. Sem foto, o card mostra um campo no pastel da
-seção e guarda a proporção, então nada pula de lugar.
-
-Os arquivos que ela mandou ficam em `originais/fotos/`, fora do Git. As versões
-do site saem de lá redimensionadas para 800px, comprimidas em JPEG progressivo e
-com o EXIF removido, que é onde vem parar GPS de foto de celular.
+O card usa proporção 3:2, com exceção dos ids listados em `FOTO_ALTA` no `app.js`,
+que usam 1:1. Produto sem foto mostra um campo no pastel da seção e guarda a
+proporção, então nada pula de lugar.
 
 ## Retirada
 
-Não tem entrega. A cliente retira ou manda buscar por conta dela. A página avisa
-antes de montar o pedido e a mensagem do WhatsApp repete.
+Não há entrega. A página informa isso antes de a pessoa montar o pedido e a mensagem
+do WhatsApp repete.

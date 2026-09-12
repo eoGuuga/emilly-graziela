@@ -1,22 +1,10 @@
-// Tabela válida: WhatsApp e áudios da Emilly, 11 e 12/09/2026.
-// O originais/precos-2025-referencia.txt é só histórico, não tirar preço de lá.
-// Pra mexer em preço é só o campo preco aqui, não tem valor em outro arquivo.
+// Os produtos do catálogo, na ordem em que aparecem na página.
 //
-// minimo      quantidade mínima, 1 quando o item não tem regra
-// unidade     o que o contador conta, quando não é unidade solta. a Torre conta
-//             torres e não donuts, por isso unidade: 'torre'. vazio é o normal
-// preco       null só no biscoito, que é sob orçamento por natureza. se outro
-//             item ficar null, o card sai sem preço e sem contador, em silêncio
-// alt         escrito à mão, descreve a técnica e nunca o personagem
-// observacao  recado meu, não aparece na página
-//
-// A ordem daqui é a ordem da página. Doces Gourmet e Doces Gourmet Personalizados
-// ficam colados de propósito: nome parecido, preço e mínimo diferentes, então a
-// comparação precisa ser lado a lado.
-//
-// Atenção: as descrições do Pão de Mel de Mesa, 2D, 3D, Paleta e Pirulito ainda
-// são as do cardápio de 2025. Ela já revisou a Trufa e veio com correção, então
-// essas cinco provavelmente também mudam.
+// preco     valor em reais, ou null quando o item é sob orçamento
+// minimo    quantidade mínima, 1 quando o item não tem regra de mínimo
+// unidade   o que o contador conta, quando não é unidade solta
+// imagem    arquivo em img/, vazio quando não há foto
+// alt       texto alternativo da foto, descreve a técnica
 
 const PRODUTOS = [
   {
@@ -28,8 +16,7 @@ const PRODUTOS = [
     alt: 'mini pães de mel redondos, com carinha de ursinho em pasta americana',
     categoria: 'avulso',
     minimo: 1,
-    unidade: '',
-    observacao: ''
+    unidade: ''
   },
   {
     id: 'pao-de-mel-2d',
@@ -40,8 +27,7 @@ const PRODUTOS = [
     alt: 'pães de mel quadrados decorados em pasta americana, com canudo de papel e laço de fita',
     categoria: 'avulso',
     minimo: 1,
-    unidade: '',
-    observacao: ''
+    unidade: ''
   },
   {
     id: 'pao-de-mel-3d',
@@ -52,8 +38,7 @@ const PRODUTOS = [
     alt: 'pão de mel 3D em formato de casinha, modelado em pasta americana',
     categoria: 'avulso',
     minimo: 1,
-    unidade: '',
-    observacao: ''
+    unidade: ''
   },
   {
     id: 'paleta-pao-de-mel',
@@ -64,8 +49,7 @@ const PRODUTOS = [
     alt: 'paletas de pão de mel cobertas com chocolate, decoradas em 2D com laço de fita',
     categoria: 'avulso',
     minimo: 1,
-    unidade: '',
-    observacao: ''
+    unidade: ''
   },
   {
     id: 'pirulito-personalizado',
@@ -76,8 +60,7 @@ const PRODUTOS = [
     alt: 'pirulitos de chocolate redondos, decorados em 2D com canudo e laço de fita',
     categoria: 'avulso',
     minimo: 1,
-    unidade: '',
-    observacao: 'Ela renomeou, antes era só "Pirulito".'
+    unidade: ''
   },
   {
     id: 'trufa',
@@ -88,8 +71,7 @@ const PRODUTOS = [
     alt: 'mini trufas de ganache decoradas com flor em pasta americana',
     categoria: 'avulso',
     minimo: 1,
-    unidade: '',
-    observacao: 'A forma de pétalas transparente saiu da descrição em 12/09/2026, nem sempre ela acha e não quer prometer. Os dois trechos sobre variação de sabor e sabor único são dela, transcritos literal, e valem só aqui.'
+    unidade: ''
   },
   {
     id: 'cento-variado',
@@ -100,8 +82,7 @@ const PRODUTOS = [
     alt: 'docinhos gourmet variados em forminhas',
     categoria: 'avulso',
     minimo: 25,
-    unidade: '',
-    observacao: 'Renomeado em 12/09/2026, era "Cento Variado" e antes disso "Cento de Doces Gourmet". R$ 3,00 x 100 fecha nos R$ 300,00 do cento. Descrição transcrita literal dela, e o "sabores a consultar" mora dentro dela por decisão dela. O id segue cento-variado, nada externo depende dele.'
+    unidade: ''
   },
   {
     id: 'cento-brigadeiro-personalizado',
@@ -112,8 +93,7 @@ const PRODUTOS = [
     alt: 'docinhos com carinha de bichinho modelada em pasta americana',
     categoria: 'avulso',
     minimo: 50,
-    unidade: '',
-    observacao: 'Renomeado em 12/09/2026, era "Cento de Brigadeiro Personalizado". Descrição transcrita literal dela. O R$ 3,50 que tinha aparecido era erro dela numa mensagem, ela mesma corrigiu: é R$ 3,80. O id segue cento-brigadeiro-personalizado, nada externo depende dele.'
+    unidade: ''
   },
   {
     id: 'cake-donut',
@@ -124,8 +104,7 @@ const PRODUTOS = [
     alt: 'mini donuts cobertos com chocolate colorido e confeitos',
     categoria: 'avulso',
     minimo: 30,
-    unidade: '',
-    observacao: 'Descrição transcrita literal do WhatsApp dela, 12/09/2026. Preço e mínimo reconfirmados na mesma conversa. Não confundir com o antigo Donuts no Palito, que saiu do catálogo.'
+    unidade: ''
   },
   {
     id: 'torre-de-donuts',
@@ -136,8 +115,7 @@ const PRODUTOS = [
     alt: 'torre de donuts decorada com laços de fita',
     categoria: 'avulso',
     minimo: 1,
-    unidade: 'torre',
-    observacao: 'Renomeada de "Torre de Donuts" em 12/09/2026. As duas primeiras frases são transcrição literal dela, a do pratinho é a regra antiga que ela confirmou antes e que o texto novo não cobria. O contador conta torres, não donuts, e os 30 por torre são fixos. A foto foi cortada no topo pra tirar o nome da cliente que aparecia no topo de bolo; o original inteiro está em originais/fotos/. Esta é a única foto que usa 1:1 no card, ver FOTO_ALTA no app.js. O id segue torre-de-donuts.'
+    unidade: 'torre'
   },
   {
     id: 'biscoito-decorado',
@@ -148,8 +126,7 @@ const PRODUTOS = [
     alt: 'biscoitos decorados em glacê real, com laço de fita e embalagem',
     categoria: 'avulso',
     minimo: 1,
-    unidade: '',
-    observacao: 'Sob orçamento de verdade, nunca vai ter preço fixo e nunca entra na soma.'
+    unidade: ''
   },
   {
     id: 'kit-festa-p',
@@ -160,8 +137,7 @@ const PRODUTOS = [
     alt: 'doces variados de um kit de festa, decorados no mesmo tema',
     categoria: 'kit',
     minimo: 1,
-    unidade: '',
-    observacao: ''
+    unidade: ''
   },
   {
     id: 'kit-festa-m',
@@ -172,8 +148,7 @@ const PRODUTOS = [
     alt: '',
     categoria: 'kit',
     minimo: 1,
-    unidade: '',
-    observacao: 'Sem foto de propósito: ela mudou a composição e não tem foto que corresponda. A lista escrita é o que explica o produto.'
+    unidade: ''
   },
   {
     id: 'kit-festa-g',
@@ -184,7 +159,6 @@ const PRODUTOS = [
     alt: '',
     categoria: 'kit',
     minimo: 1,
-    unidade: '',
-    observacao: 'Sem foto de propósito: ela mudou a composição e não tem foto que corresponda. A lista escrita é o que explica o produto.'
+    unidade: ''
   }
 ];
