@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emilly Graziela Candy Design, doces para festa</title>
+<meta name="description" content="Doces decorados sob encomenda, com o tema da sua festa. Monte o pedido e envie pelo WhatsApp.">
+<meta name="theme-color" content="#F4B9C4">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="cabecalho">
+  <div class="interno">
+    <img class="marca" src="img/logotipo.webp" width="240" height="240"
+         alt="Emilly Graziela Candy Design">
+    <p class="cabecalho-sub">Doces decorados sob encomenda, com o tema da sua festa.</p>
+    <p class="cabecalho-local">São Paulo, zona leste. Atendimento pelo WhatsApp.</p>
+  </div>
+</header>
+
+<main>
+
+  <section class="bloco">
+    <div class="interno">
+      <h2>Antes de montar seu pedido</h2>
+      <dl class="condicoes">
+        <div class="condicao">
+          <dt>Encomenda</dt>
+          <dd>Os doces são feitos para uma data. Você informa a data da festa ao enviar o pedido.</dd>
+        </div>
+        <div class="condicao">
+          <dt>Retirada</dt>
+          <dd>Não tem entrega. Você retira combinando o horário pelo WhatsApp, ou manda buscar por aplicativo, por sua conta.</dd>
+        </div>
+        <div class="condicao">
+          <dt>Pagamento</dt>
+          <dd>50% para garantir a data, 50% um dia antes da retirada.</dd>
+        </div>
+        <div class="condicao">
+          <dt>Pix à vista</dt>
+          <dd>5% de desconto no valor total.</dd>
+        </div>
+        <div class="condicao">
+          <dt>Cartão de crédito</dt>
+          <dd>Por link de pagamento, parcelável. Os juros ficam por conta da cliente.</dd>
+        </div>
+        <div class="condicao">
+          <dt>Atendimento</dt>
+          <dd>Terça a sábado, das 10h às 18h.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="catalogo catalogo--rosa">
+    <div class="faixa faixa--rosa"><h2>Doces avulsos</h2></div>
+    <div class="interno">
+      <p class="catalogo-nota">Vendidos por unidade.</p>
+      <ul class="grade" id="lista-avulsos"></ul>
+    </div>
+  </section>
+
+  <section class="catalogo catalogo--azul">
+    <div class="faixa faixa--azul"><h2>Kits de festa</h2></div>
+    <div class="interno">
+      <p class="catalogo-nota">Combinações fechadas, com preço único.</p>
+      <ul class="grade" id="lista-kits"></ul>
+    </div>
+  </section>
+
+  <noscript>
+    <div class="interno">
+      <p class="aviso-js">
+        Para montar o pedido aqui na página é preciso ativar o JavaScript.
+        Se preferir, chame direto no WhatsApp
+        <a href="https://wa.me/5511960834829">(11) 96083-4829</a>.
+      </p>
+    </div>
+  </noscript>
+
+  <section class="bloco pedido" id="pedido">
+    <div class="interno">
+      <h2>Seu pedido</h2>
+
+      <div id="pedido-vazio" class="pedido-vazio">
+        <p>Você ainda não escolheu nada.</p>
+      </div>
+
+      <div id="pedido-conteudo" hidden>
+        <ul class="resumo" id="resumo"></ul>
+
+        <p class="total" id="total-linha">
+          <span>Total</span>
+          <strong id="total-valor">R$ 0,00</strong>
+        </p>
+        <p class="total-nota" id="total-nota" hidden></p>
+
+        <form class="form-pedido" id="form-pedido" novalidate>
+          <p class="campo">
+            <label for="data-festa">Data da festa</label>
+            <input type="date" id="data-festa" name="data-festa" required>
+            <span class="erro" id="erro-data" hidden>Informe a data da festa para enviar o pedido.</span>
+          </p>
+          <p class="campo">
+            <label for="obs">Quer deixar alguma observação? <span class="opcional">(opcional)</span></label>
+            <textarea id="obs" name="obs" rows="3" placeholder="Tema da festa, cores, alguma restrição alimentar."></textarea>
+          </p>
+          <button type="submit" class="botao-enviar">Enviar pedido no WhatsApp</button>
+          <p class="form-nota">O pedido abre no WhatsApp já escrito. Nada é cobrado aqui.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco avisos">
+    <div class="interno">
+      <h2>Como conservar e consumir</h2>
+      <ul class="lista-avisos">
+        <li>Produto artesanal e sem conservante, consumir em até 5 dias.</li>
+        <li>Manter na embalagem, colocar na mesa 1 hora antes da festa. Não precisa de geladeira. Evitar lugar quente.</li>
+        <li>Olhos dos personagens não são comestíveis.</li>
+        <li>Alguns trabalhos contêm palito de dente para sustentação, cuidado ao consumir.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <div class="interno">
+    <p class="rodape-contato">
+      <a href="https://wa.me/5511960834829">WhatsApp (11) 96083-4829</a>
+      <a href="https://www.instagram.com/emillybakeoff/">Instagram @emillybakeoff</a>
+    </p>
+    <p class="rodape-local">Emilly Graziela Candy Design, São Paulo, zona leste.</p>
+  </div>
+</footer>
+
+<div class="barra" id="barra" hidden>
+  <div class="interno">
+    <span class="barra-info">
+      <strong id="barra-qtd">0 itens</strong>
+      <span id="barra-total">R$ 0,00</span>
+    </span>
+    <a class="barra-botao" href="#pedido">Ver pedido</a>
+  </div>
+</div>
+
+<script src="js/produtos.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

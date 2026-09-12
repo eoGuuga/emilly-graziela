@@ -1,0 +1,329 @@
+/* Caderno de encomenda.
+   A página se comporta como a ficha de trabalho dela, não como site.
+   Rosa e azul entram como faixa cheia separando os dois grupos de produto,
+   então a cor divide a leitura em vez de enfeitar. Preço em serifa, grande,
+   que é como preço de cardápio se lê.
+
+   Os pastéis vieram do Logotipo.png. Rosa e azul dão 1,6:1 de contraste no
+   branco, reprovam pra letra, então só aparecem como fundo com a tinta escura
+   por cima. Nessa combinação dá 8,2:1, passa folgado. */
+
+:root {
+  --papel: #FFFDFA;
+  --tinta: #3A2A24;
+  --fraca: #6E5B54;
+  --rosa: #F4B9C4;
+  --azul: #9BD4DB;
+  --rosa-fraco: #FBE6EA;
+  --azul-fraco: #DCF0F2;
+  --linha: #E7DCD5;
+
+  --serifa: Georgia, "Times New Roman", Times, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--tinta);
+  background: var(--papel);
+}
+
+img { max-width: 100%; height: auto; }
+
+h1, h2, h3, p, dl, dd, ul { margin: 0; }
+ul { list-style: none; padding: 0; }
+a { color: inherit; }
+
+:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+
+.interno {
+  max-width: 640px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+/* cabeçalho */
+
+.cabecalho { padding-block: 28px 24px; text-align: center; }
+.marca { width: 104px; height: 104px; }
+
+.cabecalho-sub {
+  font-family: var(--serifa);
+  font-size: 19px;
+  line-height: 1.35;
+  margin-top: 10px;
+}
+
+.cabecalho-local { font-size: 14px; color: var(--fraca); margin-top: 6px; }
+
+/* faixas de seção, sangram de ponta a ponta */
+
+.faixa { background: var(--rosa); padding-block: 13px; }
+.faixa--azul { background: var(--azul); }
+
+.faixa h2 {
+  max-width: 640px;
+  margin-inline: auto;
+  padding-inline: 16px;
+  font-family: var(--serifa);
+  font-size: 21px;
+  font-weight: normal;
+  line-height: 1.2;
+}
+
+.bloco { padding-block: 32px; }
+.bloco h2 {
+  font-family: var(--serifa);
+  font-size: 21px;
+  font-weight: normal;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--linha);
+}
+
+.catalogo { padding-bottom: 36px; }
+.catalogo-nota { font-size: 14px; color: var(--fraca); margin-block: 14px 0; }
+
+/* cards */
+
+.grade { display: grid; gap: 22px; margin-top: 16px; }
+
+.produto {
+  display: grid;
+  align-content: start;
+  border: 1px solid var(--linha);
+  background: #FFFFFF;
+}
+
+.produto-foto {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+/* sem foto ainda, o slot fica no pastel da própria seção
+   e guarda a proporção pra nada pular quando as fotos entrarem */
+.produto-foto--vazia {
+  display: grid;
+  place-items: center;
+  border-bottom: 1px solid var(--linha);
+}
+
+.catalogo--rosa .produto-foto--vazia { background: var(--rosa-fraco); }
+.catalogo--azul .produto-foto--vazia { background: var(--azul-fraco); }
+
+.produto-foto-aviso {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--fraca);
+}
+
+.produto-corpo { padding: 15px 15px 17px; display: grid; gap: 7px; }
+
+.produto-nome {
+  font-family: var(--serifa);
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 1.25;
+}
+
+.produto-desc { font-size: 14.5px; line-height: 1.5; color: var(--fraca); }
+
+.produto-preco {
+  font-family: var(--serifa);
+  font-size: 27px;
+  line-height: 1.05;
+  margin-top: 4px;
+}
+
+/* o item sob orçamento nunca vai ter número, então o card é outro objeto */
+.produto--orcamento { border-color: var(--tinta); }
+.produto--orcamento .produto-corpo { background: var(--rosa-fraco); }
+.produto-preco--sob { font-style: italic; font-size: 22px; }
+
+/* enquanto a tabela de preço não volta o card fecha depois da descrição,
+   sem valor e sem stepper */
+.produto--sem-preco .produto-corpo { padding-bottom: 19px; }
+
+/* stepper, 44px de alvo senão erra o toque no celular */
+
+.stepper { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+
+.stepper-botao {
+  min-width: 44px;
+  min-height: 44px;
+  font-family: var(--sans);
+  font-size: 19px;
+  color: var(--tinta);
+  background: #FFFFFF;
+  border: 1px solid var(--tinta);
+  cursor: pointer;
+}
+
+.stepper-botao:hover { background: var(--rosa-fraco); }
+
+.stepper-qtd {
+  min-width: 3ch;
+  text-align: center;
+  font-family: var(--serifa);
+  font-size: 19px;
+}
+
+.orcamento-marcar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.orcamento-marcar input { width: 21px; height: 21px; accent-color: var(--tinta); }
+
+/* pedido */
+
+.pedido-vazio { color: var(--fraca); margin-top: 16px; }
+
+.resumo { display: grid; gap: 12px; margin-block: 18px; }
+
+.resumo-linha {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--linha);
+}
+
+.resumo-nome { grid-column: 1; font-family: var(--serifa); font-size: 17px; }
+.resumo-qtd  { grid-column: 1; font-size: 13.5px; color: var(--fraca); }
+
+.resumo-sub {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--serifa);
+  font-size: 18px;
+}
+
+.resumo-linha--orcamento .resumo-sub { font-style: italic; font-size: 14px; color: var(--fraca); }
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--serifa);
+  font-size: 19px;
+}
+
+.total strong { font-size: 28px; font-weight: normal; }
+.total-nota { font-size: 14px; color: var(--fraca); margin-top: 6px; }
+
+/* formulário, os 16px são obrigatórios senão o iOS dá zoom no campo */
+
+.form-pedido { display: grid; gap: 18px; margin-top: 24px; }
+.campo { display: grid; gap: 7px; }
+.campo label { font-size: 15px; font-weight: 600; }
+
+.form-pedido input,
+.form-pedido textarea {
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--tinta);
+  min-height: 46px;
+  padding: 11px 12px;
+  background: #FFFFFF;
+  border: 1px solid var(--fraca);
+  width: 100%;
+}
+
+.form-pedido textarea { min-height: 86px; resize: vertical; line-height: 1.5; }
+.form-pedido [aria-invalid] { border-color: #A03027; border-width: 2px; }
+
+.opcional { font-weight: normal; color: var(--fraca); }
+.erro { font-size: 14px; color: #A03027; }
+
+.botao-enviar {
+  min-height: 50px;
+  padding-inline: 20px;
+  font-family: var(--sans);
+  font-size: 16.5px;
+  font-weight: 600;
+  color: var(--papel);
+  background: var(--tinta);
+  border: 1px solid var(--tinta);
+  cursor: pointer;
+}
+
+.botao-enviar:hover { background: #4A362E; }
+
+.form-nota { font-size: 13.5px; color: var(--fraca); }
+
+/* condições e avisos */
+
+.condicoes { display: grid; gap: 14px; margin-top: 18px; }
+.condicao { display: grid; grid-template-columns: 128px 1fr; gap: 14px; }
+.condicao dt { font-size: 15px; font-weight: 600; }
+.condicao dd { margin: 0; font-size: 15px; color: var(--fraca); }
+
+.lista-avisos { display: grid; gap: 11px; margin-top: 18px; font-size: 14.5px; color: var(--fraca); }
+.lista-avisos li { padding-left: 15px; text-indent: -15px; }
+.lista-avisos li::before { content: "• "; color: var(--rosa); }
+
+.aviso-js { max-width: 640px; margin-inline: auto; padding: 16px; background: var(--rosa-fraco); }
+
+/* rodapé */
+
+.rodape { padding-block: 30px 40px; border-top: 1px solid var(--linha); }
+.rodape-contato { display: grid; gap: 2px; }
+.rodape-contato a { display: inline-flex; align-items: center; min-height: 44px; font-size: 15.5px; }
+.rodape-local { font-size: 13.5px; color: var(--fraca); margin-top: 8px; }
+
+/* barra fixa */
+
+.barra { position: sticky; bottom: 0; background: var(--rosa); border-top: 1px solid var(--tinta); }
+.barra[hidden] { display: none; }
+
+.barra .interno {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-block: 9px;
+}
+
+.barra-info { display: grid; }
+.barra-info strong { font-size: 15px; font-weight: 600; }
+.barra-total { font-family: var(--serifa); font-size: 17px; }
+.barra-total[hidden] { display: none; }
+
+.barra-botao {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 17px;
+  font-size: 15.5px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--tinta);
+}
+
+.barra-botao:hover { background: var(--papel); }
+
+/* duas colunas a partir do tablet */
+
+@media (min-width: 700px) {
+  .interno, .faixa h2, .aviso-js { max-width: 900px; }
+  .grade { grid-template-columns: 1fr 1fr; gap: 26px; }
+  .faixa h2 { font-size: 24px; }
+  .bloco h2 { font-size: 24px; }
+  .cabecalho-sub { font-size: 21px; }
+}
