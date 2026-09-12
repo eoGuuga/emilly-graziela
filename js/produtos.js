@@ -10,8 +10,9 @@
 // alt         escrito à mão, descreve a técnica e nunca o personagem
 // observacao  recado meu, não aparece na página
 //
-// Atenção: as descrições do Pão de Mel de Mesa, 2D, 3D, Paleta, Pirulito e Trufa
-// ainda são as do cardápio de 2025. Ela reconfirmou só os preços e vai revisar.
+// Atenção: as descrições do Pão de Mel de Mesa, 2D, 3D, Paleta e Pirulito ainda
+// são as do cardápio de 2025. Ela já revisou a Trufa e veio com correção, então
+// essas cinco provavelmente também mudam.
 
 const PRODUTOS = [
   {
@@ -19,8 +20,8 @@ const PRODUTOS = [
     nome: 'Pão de Mel de Mesa',
     descricao: 'Mini, redondo, recheado, pasta americana 2D.',
     preco: 12.00,
-    imagem: '',
-    alt: '',
+    imagem: 'pao-de-mel-mesa.jpg',
+    alt: 'mini pães de mel redondos, com carinha de ursinho em pasta americana',
     categoria: 'avulso',
     minimo: 1,
     unidade: '',
@@ -31,8 +32,8 @@ const PRODUTOS = [
     nome: 'Pão de Mel 2D',
     descricao: 'Quadrado, recheado com doce de leite ou brigadeiro, pasta americana 2D, canudo de papel e laço de fita.',
     preco: 25.00,
-    imagem: '',
-    alt: '',
+    imagem: 'pao-de-mel-2d.jpg',
+    alt: 'pães de mel quadrados decorados em pasta americana, com canudo de papel e laço de fita',
     categoria: 'avulso',
     minimo: 1,
     unidade: '',
@@ -44,7 +45,7 @@ const PRODUTOS = [
     descricao: 'De doce de leite, formato quadrado, suporte decorado, elementos em pasta americana 2D e 3D.',
     preco: 38.00,
     imagem: 'pao-de-mel-3d.jpg',
-    alt: 'pães de mel 3D decorados em pasta americana, com canudo e laço de fita',
+    alt: 'pão de mel 3D em formato de casinha, modelado em pasta americana',
     categoria: 'avulso',
     minimo: 1,
     unidade: '',
@@ -55,8 +56,8 @@ const PRODUTOS = [
     nome: 'Paleta de Pão de Mel',
     descricao: 'Pão de mel de doce de leite ou brigadeiro, formato de sorvete, decoração 2D, laço de fita.',
     preco: 32.00,
-    imagem: '',
-    alt: '',
+    imagem: 'paleta-de-pao-de-mel.jpg',
+    alt: 'paletas de pão de mel cobertas com chocolate, decoradas em 2D com laço de fita',
     categoria: 'avulso',
     minimo: 1,
     unidade: '',
@@ -67,8 +68,8 @@ const PRODUTOS = [
     nome: 'Pirulito Personalizado',
     descricao: 'Chocolate ao leite, pasta americana 2D, canudo de papel e laço de fita.',
     preco: 22.00,
-    imagem: '',
-    alt: '',
+    imagem: 'pirulito-personalizado.jpg',
+    alt: 'pirulitos de chocolate redondos, decorados em 2D com canudo e laço de fita',
     categoria: 'avulso',
     minimo: 1,
     unidade: '',
@@ -77,84 +78,78 @@ const PRODUTOS = [
   {
     id: 'trufa',
     nome: 'Trufa',
-    descricao: 'Mini trufa de ganache, com decoração em 2D.',
+    descricao: 'Mini trufa de ganache, com decoração em 2D. Sabores: brigadeiro, ninho, ninho com creme de avelã, prestígio. Os sabores podem variar de acordo com a disponibilidade dos recheios no momento da produção. Caso o cliente prefira, é possível especificar um único sabor para toda a quantidade encomendada, mediante disponibilidade dos ingredientes.',
     preco: 8.00,
-    imagem: '',
-    alt: '',
+    imagem: 'trufa.jpg',
+    alt: 'mini trufas de ganache decoradas com flor em pasta americana',
     categoria: 'avulso',
     minimo: 1,
     unidade: '',
-    observacao: `Ela tirou a forma de pétalas transparente da descrição em 12/09/2026, porque nem sempre acha e não quer prometer.
-
-Mandou também estes dois trechos por escrito, transcritos literal, mas ainda NÃO confirmou de qual produto são:
-"Os sabores podem variar de acordo com a disponibilidade dos recheios no momento da produção."
-"Caso o cliente prefira, é possível especificar um único sabor para toda a quantidade encomendada, mediante disponibilidade dos ingredientes."
-Veio junto uma lista encabeçada pela palavra "Trufas" com brigadeiro, ninho, ninho com creme de avelã e prestígio. Provavelmente é daqui, mas nada disso entra na página até ela confirmar.`
+    observacao: 'A forma de pétalas transparente saiu da descrição em 12/09/2026, nem sempre ela acha e não quer prometer. Os dois trechos sobre variação de sabor e sabor único são dela, transcritos literal, e valem só aqui.'
   },
   {
     id: 'cento-brigadeiro-personalizado',
     nome: 'Cento de Brigadeiro Personalizado',
     descricao: '',
     preco: 3.80,
-    imagem: 'brigadeiro-personalizado.jpg',
-    alt: 'brigadeiros com carinha de bichinho modelada em pasta americana',
+    imagem: 'doces-gourmet-personalizados.jpg',
+    alt: 'docinhos com carinha de bichinho modelada em pasta americana',
     categoria: 'avulso',
     minimo: 50,
     unidade: '',
-    observacao: `Sem descrição ainda. O nome pode mudar, porque não exige 100 e briga com o mínimo no mesmo card. Trocar só aqui no nome.
+    observacao: `AINDA SEM DESCRIÇÃO. É o único produto mudo da página.
+
+O nome pode mudar, porque não exige 100 e briga com o mínimo no mesmo card. Trocar só aqui no nome.
 
 PENDENTE: apareceu um R$ 3,50 pra conferir contra o R$ 3,80 que está aqui. Não sei de onde saiu o 3,50, ela nunca me passou esse número. Mantido 3,80 até ela confirmar.`
   },
   {
     id: 'cake-donut',
     nome: 'Cake Donut',
-    descricao: '',
+    descricao: 'Um delicioso bolo macio e fofinho, assado no formato de donuts e finalizado com uma cobertura de chocolate. Sabores da massa: baunilha ou chocolate. A decoração pode ser personalizada de acordo com o tema e o gosto do cliente, podendo incluir pasta americana, confeitos, pós decorativos, brilho e outros detalhes.',
     preco: 4.00,
     imagem: 'cake-donut.jpg',
-    alt: 'mini donuts cobertos com chocolate rosa e branco, decorados com confeitos',
+    alt: 'mini donuts cobertos com chocolate colorido e confeitos',
     categoria: 'avulso',
     minimo: 30,
     unidade: '',
-    observacao: 'Sem descrição ainda, ela ficou de mandar uma frase. Não confundir com o antigo Donuts no Palito, que saiu do catálogo.'
+    observacao: 'Descrição transcrita literal do WhatsApp dela, 12/09/2026. Preço e mínimo reconfirmados na mesma conversa. Não confundir com o antigo Donuts no Palito, que saiu do catálogo.'
   },
   {
     id: 'cento-variado',
     nome: 'Cento Variado',
     descricao: 'Sabores a consultar.',
     preco: 3.00,
-    imagem: 'cento-variado.jpg',
-    alt: 'docinhos variados de brigadeiro gourmet em forminhas',
+    imagem: 'doces-gourmet.jpg',
+    alt: 'docinhos gourmet variados em forminhas',
     categoria: 'avulso',
     minimo: 25,
     unidade: '',
     observacao: `R$ 3,00 x 100 fecha nos R$ 300,00 do cento. O nome pode mudar, porque o mínimo é 25 e não 100. Trocar só aqui no nome.
 
-Este é o produto que ela chama de "Doces Gourmet", que no cardápio de 2025 era "Cento de Doces Gourmet". O "sabores a consultar" segue em aberto, ela ainda não disse quais são.
+É este o produto que ela chama de "Doces Gourmet", que no cardápio de 2025 era "Cento de Doces Gourmet".
 
-Mandou estes dois trechos por escrito, transcritos literal, mas ainda NÃO confirmou de qual produto são:
-"Os sabores podem variar de acordo com a disponibilidade dos recheios no momento da produção."
-"Caso o cliente prefira, é possível especificar um único sabor para toda a quantidade encomendada, mediante disponibilidade dos ingredientes."
-A lista que veio junto estava encabeçada pela palavra "Trufas", então pode ser de lá e não daqui. Nada entra na página até ela confirmar.`
+PENDENTE: o "sabores a consultar" segue em aberto, ela ainda não disse quais são. Os trechos sobre variação de sabor são das Trufas e não valem aqui, confirmado em 12/09/2026.`
   },
   {
     id: 'torre-de-donuts',
-    nome: 'Torre de Donuts',
-    descricao: '24 cm, com 30 donuts. Vai montada no pratinho, que fica com você e não é devolvido.',
+    nome: 'Torre de Cake Donuts',
+    descricao: 'Torre com 30 Cake Donuts, montada com aproximadamente 24 cm de altura. Inclui topo personalizado e decoração em alguns dos donuts, seguindo o tema escolhido pelo cliente. O pratinho vai junto e fica com você, não precisa devolver.',
     preco: 150.00,
-    imagem: '',
-    alt: '',
+    imagem: 'torre-de-cake-donuts.jpg',
+    alt: 'torre de donuts decorada com laços de fita',
     categoria: 'avulso',
     minimo: 1,
     unidade: 'torre',
-    observacao: 'O contador conta torres, não donuts. Os 30 donuts por torre são fixos.'
+    observacao: 'Renomeada de "Torre de Donuts" em 12/09/2026. As duas primeiras frases são transcrição literal dela, a do pratinho é a regra antiga que ela confirmou antes e que o texto novo não cobria. O contador conta torres, não donuts, e os 30 por torre são fixos. O id segue torre-de-donuts, nada externo depende dele.'
   },
   {
     id: 'biscoito-decorado',
     nome: 'Biscoito Decorado',
     descricao: 'Você manda os modelos que quer, ou só o tema, e recebe o orçamento.',
     preco: null,
-    imagem: '',
-    alt: '',
+    imagem: 'biscoito-decorado.jpg',
+    alt: 'biscoitos decorados em glacê real, com laço de fita e embalagem',
     categoria: 'avulso',
     minimo: 1,
     unidade: '',
@@ -165,8 +160,8 @@ A lista que veio junto estava encabeçada pela palavra "Trufas", então pode ser
     nome: 'Kit Festa P',
     descricao: '20 doces: 4 Pães de Mel 2D, 6 Pães de Mel de Mesa, 6 Trufas, 4 Pirulitos.',
     preco: 300.00,
-    imagem: '',
-    alt: '',
+    imagem: 'kit-festa-p.jpg',
+    alt: 'doces variados de um kit de festa, decorados no mesmo tema',
     categoria: 'kit',
     minimo: 1,
     unidade: '',
@@ -182,7 +177,7 @@ A lista que veio junto estava encabeçada pela palavra "Trufas", então pode ser
     categoria: 'kit',
     minimo: 1,
     unidade: '',
-    observacao: ''
+    observacao: 'Sem foto de propósito: ela mudou a composição e não tem foto que corresponda. A lista escrita é o que explica o produto.'
   },
   {
     id: 'kit-festa-g',
@@ -194,6 +189,6 @@ A lista que veio junto estava encabeçada pela palavra "Trufas", então pode ser
     categoria: 'kit',
     minimo: 1,
     unidade: '',
-    observacao: ''
+    observacao: 'Sem foto de propósito: ela mudou a composição e não tem foto que corresponda. A lista escrita é o que explica o produto.'
   }
 ];

@@ -345,7 +345,10 @@
       return;
     }
 
-    window.open(link(mensagem(campoData.value, $('obs').value.trim())), '_blank');
+    // alguns navegadores devolvem \r\n do textarea, e o \r vira quebra
+    // sobrando na mensagem da WhatsApp
+    const obs = $('obs').value.replace(/\r\n/g, '\n').trim();
+    window.open(link(mensagem(campoData.value, obs)), '_blank');
   };
 
   atualizar();

@@ -66,8 +66,16 @@ em UTC ou na meia-noite faz virada de fuso empurrar o resultado um dia.
 
 Uma por produto, em `img/`, nome sem acento e sem espaço, jpg ou webp, no
 máximo 800px de largura. O `alt` é escrito à mão no `produtos.js` e descreve a
-técnica, nunca o personagem. Sem foto, o card mostra um campo no pastel da
-seção e guarda a proporção, então nada pula de lugar quando a foto entra.
+técnica, nunca o personagem.
+
+12 dos 14 produtos têm foto. Kit Festa M e Kit Festa G ficam sem, de propósito:
+a composição dos dois mudou e não existe foto que corresponda, então a lista
+escrita é o que explica o produto. Sem foto, o card mostra um campo no pastel da
+seção e guarda a proporção, então nada pula de lugar.
+
+Os arquivos que ela mandou ficam em `originais/fotos/`, fora do Git. As versões
+do site saem de lá redimensionadas para 800px, comprimidas em JPEG progressivo e
+com o EXIF removido, que é onde vem parar GPS de foto de celular.
 
 ## Retirada
 
