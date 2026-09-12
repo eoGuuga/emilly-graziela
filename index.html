@@ -110,7 +110,8 @@
           </p>
           <p class="campo">
             <label for="obs">Quer deixar alguma observação? <span class="opcional">(opcional)</span></label>
-            <textarea id="obs" name="obs" rows="3" placeholder="Tema da festa, cores, se quer as trufas de um sabor só, alguma restrição alimentar."></textarea>
+            <textarea id="obs" name="obs" rows="3" maxlength="300" placeholder="Tema da festa, cores, se quer as trufas de um sabor só, alguma restrição alimentar."></textarea>
+          <span class="contador" id="obs-contador" hidden></span>
           </p>
           <p class="erro" id="erro-minimo" hidden></p>
           <button type="submit" class="botao-enviar">Enviar pedido no WhatsApp</button>

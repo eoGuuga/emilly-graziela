@@ -33,7 +33,7 @@ Tabela válida: WhatsApp e áudios da Emilly, 11 e 12/09/2026. O arquivo
 Dois campos definem como o item é vendido:
 
 - `minimo` é a quantidade mínima, 1 quando não tem regra. Hoje são três: 50 no
-  Brigadeiro Personalizado, 30 no Cake Donut e 25 no Cento Variado. O contador
+  Doces Gourmet Personalizados, 30 no Cake Donut e 25 no Doces Gourmet. O contador
   começa em 0, o primeiro toque pula direto pro mínimo e dali anda de 1 em 1.
   Descendo abaixo do mínimo volta pra 0, nunca para em quantidade inválida, e o
   envio trava se algo escapar.
@@ -47,8 +47,13 @@ preço fixo e nunca entra na soma. Quem separa ele dos outros é o id.
 Se algum item ficar sem preço por falta de dado, o card renderiza calado, sem
 valor e sem contador. É rede de proteção, não estado esperado.
 
-Os nomes "Cento Variado" e "Cento de Brigadeiro Personalizado" podem mudar, já que
-nenhum dos dois exige 100 unidades. Trocar só o campo `nome`, nada mais depende dele.
+A ordem do array é a ordem da página. Doces Gourmet e Doces Gourmet Personalizados
+ficam colados de propósito: os nomes são parecidos e o preço e o mínimo são
+diferentes, então a comparação precisa ser lado a lado.
+
+Renomear um produto mexe só no campo `nome`. Os `id` continuam os antigos
+(`cento-variado`, `cento-brigadeiro-personalizado`, `torre-de-donuts`) porque nada
+externo depende deles.
 
 ## Prazo
 

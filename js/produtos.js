@@ -10,6 +10,10 @@
 // alt         escrito à mão, descreve a técnica e nunca o personagem
 // observacao  recado meu, não aparece na página
 //
+// A ordem daqui é a ordem da página. Doces Gourmet e Doces Gourmet Personalizados
+// ficam colados de propósito: nome parecido, preço e mínimo diferentes, então a
+// comparação precisa ser lado a lado.
+//
 // Atenção: as descrições do Pão de Mel de Mesa, 2D, 3D, Paleta e Pirulito ainda
 // são as do cardápio de 2025. Ela já revisou a Trufa e veio com correção, então
 // essas cinco provavelmente também mudam.
@@ -88,20 +92,28 @@ const PRODUTOS = [
     observacao: 'A forma de pétalas transparente saiu da descrição em 12/09/2026, nem sempre ela acha e não quer prometer. Os dois trechos sobre variação de sabor e sabor único são dela, transcritos literal, e valem só aqui.'
   },
   {
+    id: 'cento-variado',
+    nome: 'Doces Gourmet',
+    descricao: 'Todos podem ser finalizados com confeitos belgas, raspas de chocolate ou outros acabamentos especiais. Alguns sabores também recebem creme de avelã ou doce de leite. Sabores a consultar.',
+    preco: 3.00,
+    imagem: 'doces-gourmet.jpg',
+    alt: 'docinhos gourmet variados em forminhas',
+    categoria: 'avulso',
+    minimo: 25,
+    unidade: '',
+    observacao: 'Renomeado em 12/09/2026, era "Cento Variado" e antes disso "Cento de Doces Gourmet". R$ 3,00 x 100 fecha nos R$ 300,00 do cento. Descrição transcrita literal dela, e o "sabores a consultar" mora dentro dela por decisão dela. O id segue cento-variado, nada externo depende dele.'
+  },
+  {
     id: 'cento-brigadeiro-personalizado',
-    nome: 'Cento de Brigadeiro Personalizado',
-    descricao: '',
+    nome: 'Doces Gourmet Personalizados',
+    descricao: 'Doces produzidos com chocolates de alta qualidade e ingredientes selecionados, cuidadosamente preparados para combinar com a identidade de cada evento. Podem ser finalizados com confeitos belgas, formatos diferenciados e cores variadas, além de receber diferentes tipos de acabamento, como carimbo personalizado, glitter, papel arroz e detalhes em pasta americana.',
     preco: 3.80,
     imagem: 'doces-gourmet-personalizados.jpg',
     alt: 'docinhos com carinha de bichinho modelada em pasta americana',
     categoria: 'avulso',
     minimo: 50,
     unidade: '',
-    observacao: `AINDA SEM DESCRIÇÃO. É o único produto mudo da página.
-
-O nome pode mudar, porque não exige 100 e briga com o mínimo no mesmo card. Trocar só aqui no nome.
-
-PENDENTE: apareceu um R$ 3,50 pra conferir contra o R$ 3,80 que está aqui. Não sei de onde saiu o 3,50, ela nunca me passou esse número. Mantido 3,80 até ela confirmar.`
+    observacao: 'Renomeado em 12/09/2026, era "Cento de Brigadeiro Personalizado". Descrição transcrita literal dela. O R$ 3,50 que tinha aparecido era erro dela numa mensagem, ela mesma corrigiu: é R$ 3,80. O id segue cento-brigadeiro-personalizado, nada externo depende dele.'
   },
   {
     id: 'cake-donut',
@@ -116,22 +128,6 @@ PENDENTE: apareceu um R$ 3,50 pra conferir contra o R$ 3,80 que está aqui. Não
     observacao: 'Descrição transcrita literal do WhatsApp dela, 12/09/2026. Preço e mínimo reconfirmados na mesma conversa. Não confundir com o antigo Donuts no Palito, que saiu do catálogo.'
   },
   {
-    id: 'cento-variado',
-    nome: 'Cento Variado',
-    descricao: 'Sabores a consultar.',
-    preco: 3.00,
-    imagem: 'doces-gourmet.jpg',
-    alt: 'docinhos gourmet variados em forminhas',
-    categoria: 'avulso',
-    minimo: 25,
-    unidade: '',
-    observacao: `R$ 3,00 x 100 fecha nos R$ 300,00 do cento. O nome pode mudar, porque o mínimo é 25 e não 100. Trocar só aqui no nome.
-
-É este o produto que ela chama de "Doces Gourmet", que no cardápio de 2025 era "Cento de Doces Gourmet".
-
-PENDENTE: o "sabores a consultar" segue em aberto, ela ainda não disse quais são. Os trechos sobre variação de sabor são das Trufas e não valem aqui, confirmado em 12/09/2026.`
-  },
-  {
     id: 'torre-de-donuts',
     nome: 'Torre de Cake Donuts',
     descricao: 'Torre com 30 Cake Donuts, montada com aproximadamente 24 cm de altura. Inclui topo personalizado e decoração em alguns dos donuts, seguindo o tema escolhido pelo cliente. O pratinho vai junto e fica com você, não precisa devolver.',
@@ -141,7 +137,7 @@ PENDENTE: o "sabores a consultar" segue em aberto, ela ainda não disse quais s�
     categoria: 'avulso',
     minimo: 1,
     unidade: 'torre',
-    observacao: 'Renomeada de "Torre de Donuts" em 12/09/2026. As duas primeiras frases são transcrição literal dela, a do pratinho é a regra antiga que ela confirmou antes e que o texto novo não cobria. O contador conta torres, não donuts, e os 30 por torre são fixos. O id segue torre-de-donuts, nada externo depende dele.'
+    observacao: 'Renomeada de "Torre de Donuts" em 12/09/2026. As duas primeiras frases são transcrição literal dela, a do pratinho é a regra antiga que ela confirmou antes e que o texto novo não cobria. O contador conta torres, não donuts, e os 30 por torre são fixos. A foto foi cortada no topo pra tirar o nome da cliente que aparecia no topo de bolo; o original inteiro está em originais/fotos/. Esta é a única foto que usa 1:1 no card, ver FOTO_ALTA no app.js. O id segue torre-de-donuts.'
   },
   {
     id: 'biscoito-decorado',

@@ -111,6 +111,10 @@ a { color: inherit; }
 
 /* sem foto ainda, o slot fica no pastel da própria seção
    e guarda a proporção pra nada pular quando as fotos entrarem */
+/* a torre é vertical: no 3:2 dos outros ela vira um monte de donuts
+   empilhados e a forma de torre some */
+.produto-foto--alta { aspect-ratio: 1 / 1; }
+
 .produto-foto--vazia {
   display: grid;
   place-items: center;
@@ -254,6 +258,7 @@ a { color: inherit; }
 .form-pedido [aria-invalid] { border-color: #A03027; border-width: 2px; }
 
 .opcional { font-weight: normal; color: var(--fraca); }
+.contador { font-size: 13px; color: var(--fraca); text-align: right; }
 .erro { font-size: 14px; color: #A03027; }
 
 /* aviso de prazo curto: ela aceita o pedido, então é recado e não erro */

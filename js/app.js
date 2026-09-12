@@ -9,6 +9,12 @@
   const PIX = 0.05;
   const SOB_ORCAMENTO = 'biscoito-decorado';
   const DIAS_MINIMOS = 15;
+  const LIMITE_OBS = 300;
+  const AVISA_OBS = 200;
+
+  // a torre é vertical. no 3:2 dos outros ela vira um monte de donuts empilhados
+  // e a forma de torre some, então é a única que usa 1:1 no card
+  const FOTO_ALTA = ['torre-de-donuts'];
 
   const quantidades = {};
   let querOrcamento = false;
@@ -69,22 +75,23 @@
     return n;
   }
 
-  function slotVazio() {
-    const vazio = el('div', 'produto-foto produto-foto--vazia');
+  function slotVazio(extra) {
+    const vazio = el('div', 'produto-foto produto-foto--vazia' + extra);
     vazio.append(el('span', 'produto-foto-aviso', 'Foto em breve'));
     return vazio;
   }
 
   function foto(produto) {
-    if (!produto.imagem) return slotVazio();
+    const extra = FOTO_ALTA.includes(produto.id) ? ' produto-foto--alta' : '';
+    if (!produto.imagem) return slotVazio(extra);
 
-    const img = el('img', 'produto-foto');
+    const img = el('img', 'produto-foto' + extra);
     img.src = 'img/' + produto.imagem;
     img.loading = 'lazy';
     img.alt = produto.alt;
     // se o arquivo ainda não estiver em img/, cai no slot vazio em vez
     // de deixar o ícone de imagem quebrada estourando o card
-    img.onerror = () => img.replaceWith(slotVazio());
+    img.onerror = () => img.replaceWith(slotVazio(extra));
     return img;
   }
 
@@ -324,6 +331,19 @@
     avisoPrazo.hidden = !foraDoPrazo(campoData.value);
   };
 
+  // o maxlength do campo já corta em LIMITE_OBS. o contador só aparece
+  // perto do fim, pra não ficar barulhento enquanto sobra espaço
+  const campoObs = $('obs');
+  const contadorObs = $('obs-contador');
+
+  campoObs.oninput = () => {
+    const faltam = LIMITE_OBS - campoObs.value.length;
+    contadorObs.hidden = campoObs.value.length < AVISA_OBS;
+    contadorObs.textContent = faltam === 1
+      ? 'falta 1 caractere'
+      : 'faltam ' + faltam + ' caracteres';
+  };
+
   form.onsubmit = e => {
     e.preventDefault();
 
@@ -346,8 +366,9 @@
     }
 
     // alguns navegadores devolvem \r\n do textarea, e o \r vira quebra
-    // sobrando na mensagem da WhatsApp
-    const obs = $('obs').value.replace(/\r\n/g, '\n').trim();
+    // sobrando na mensagem da WhatsApp. o slice é cinto e suspensório,
+    // caso o maxlength seja contornado
+    const obs = campoObs.value.replace(/\r\n/g, '\n').trim().slice(0, LIMITE_OBS);
     window.open(link(mensagem(campoData.value, obs)), '_blank');
   };
 
