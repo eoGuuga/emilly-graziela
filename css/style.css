@@ -295,6 +295,24 @@ h2 {
 .tabela--curta { max-width: 18rem; margin-top: 32px; }
 .tabela--curta td:last-child { text-align: right; }
 
+/* no celular a tabela de bolos empilha: tipo e preço na mesma linha,
+   sabores embaixo em largura cheia. Três colunas em 390px espremiam os
+   sabores numa coluna de cem pixels, uma palavra por linha. */
+@media (max-width: 719px) {
+  .tabela--bolos thead { display: none; }
+  .tabela--bolos tbody tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 4px 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--linha);
+  }
+  .tabela--bolos tbody th,
+  .tabela--bolos tbody td { display: block; padding: 0; border: 0; }
+  .tabela--bolos tbody td:last-child { grid-column: 1 / -1; color: var(--fraca); }
+}
+
 .bolos-texto { margin-top: 18px; color: var(--fraca); font-size: 15.5px; }
 
 /* botão de contorno, pra caminho secundário */
@@ -424,9 +442,11 @@ h2 {
 
 .pilula {
   position: fixed;
-  left: 50%;
+  left: 0;
+  right: 0;
+  width: fit-content;
+  margin-inline: auto;
   bottom: calc(14px + env(safe-area-inset-bottom));
-  transform: translateX(-50%);
   z-index: 40;
   display: flex;
   align-items: center;
@@ -437,7 +457,7 @@ h2 {
   border: 1.5px solid var(--tinta);
   border-radius: 999px;
 }
-.pilula-info { display: grid; line-height: 1.15; }
+.pilula-info { display: grid; line-height: 1.15; white-space: nowrap; }
 .pilula-info strong { font-size: 14px; font-weight: 600; white-space: nowrap; }
 #barra-total { font-family: var(--serifa); font-weight: 600; font-size: 16px; }
 
