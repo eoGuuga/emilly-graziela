@@ -435,11 +435,32 @@ h2 {
 
 /* rodapé */
 
-.rodape { padding: 40px 0 48px; text-align: center; }
+/* rodapé: o pontilhado que dividiu as seções fecha em anel, vazio de propósito
+   (o monograma dentro dele repetia a logo do topo e sumia em 38px). Só o
+   horário e o WhatsApp ganham peso, que é o que se procura ali. */
+.rodape { padding: 40px 0 calc(48px + env(safe-area-inset-bottom)); text-align: center; }
+.rodape-anel {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+  border: 3px dotted var(--azul);
+  border-radius: 50%;
+}
 .rodape-nome { font-family: var(--serifa); font-weight: 600; font-size: 20px; }
 .rodape-local { font-size: 14px; color: var(--fraca); margin-top: 4px; }
-.rodape-contato { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 18px; }
-.rodape-contato a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; font-size: 15.5px; }
+.rodape-horario { font-size: 15px; margin-top: 10px; }
+.rodape-whats { max-width: 20rem; margin: 22px auto 0; }
+.rodape-numero { font-size: 14px; color: var(--fraca); margin-top: 10px; }
+.rodape-insta { font-size: 15px; margin-top: 18px; }
+.rodape-insta a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 3px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (min-width: 720px) { .rodape-anel { width: 72px; height: 72px; } }
 
 /* a pílula flutuante do pedido */
 
