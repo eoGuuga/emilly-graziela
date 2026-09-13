@@ -161,6 +161,16 @@ const PRODUTOS = [
     ]
   },
   {
+    id: 'cupcake',
+    nome: 'Cupcake',
+    descricao: 'Massa de baunilha ou chocolate, coberto com chantilly. Recheio a consultar. Acompanha tag personalizada em papel no topo.',
+    preco: 12.00,
+    categoria: 'avulso',
+    minimo: 10,
+    unidade: '',
+    fotos: []
+  },
+  {
     id: 'kit-festa-p',
     nome: 'Kit Festa P',
     descricao: '20 doces: 4 Pães de Mel 2D, 6 Pães de Mel de Mesa, 6 Trufas, 4 Pirulitos.',

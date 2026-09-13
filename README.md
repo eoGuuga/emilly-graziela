@@ -11,7 +11,7 @@ GitHub Pages servindo da raiz.
 
     index.html             a página
     css/style.css          estilo
-    js/produtos.js         os 14 produtos, os preços e a tabela de bolos
+    js/produtos.js         os 15 produtos, os preços e a tabela de bolos
     js/app.js              catálogo, tela cheia, pedido e a mensagem do WhatsApp
     fonts/                 a fonte de título, um arquivo, com a licença ao lado
     img/card/              foto de cada produto a 720px, a que o card carrega
