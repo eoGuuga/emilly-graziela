@@ -819,11 +819,23 @@
   // só bloqueia data que já passou; prazo curto é aviso, não trava
   campoData.min = hoje();
 
+  // data passada é conferida na hora da escolha, não só no envio: o seletor do
+  // iOS ignora o min (WebKit 225639), então a pessoa consegue marcar ontem e
+  // precisa ver o erro ali mesmo. Android e desktop travam no seletor.
+  const dataPassada = () => Boolean(campoData.value) && campoData.value < hoje();
   campoData.oninput = () => {
+    if (dataPassada()) {
+      erroData.textContent = 'Essa data já passou. Confere a data da festa.';
+      erroData.hidden = false;
+      campoData.setAttribute('aria-invalid', 'true');
+      avisoPrazo.hidden = true;
+      return;
+    }
     erroData.hidden = true;
     campoData.removeAttribute('aria-invalid');
     avisoPrazo.hidden = !foraDoPrazo(campoData.value);
   };
+  campoData.onchange = campoData.oninput;
 
   // o maxlength do campo já corta em LIMITE_OBS. o contador só aparece
   // perto do fim, pra não ficar barulhento enquanto sobra espaço
@@ -853,7 +865,7 @@
     erroMinimo.hidden = true;
 
     // sem data, ou data que já passou: o min trava o seletor, mas data digitada passa por ele
-    if (!campoData.value || campoData.value < hoje()) {
+    if (!campoData.value || dataPassada()) {
       erroData.textContent = campoData.value
         ? 'Essa data já passou. Confere a data da festa.'
         : 'Informe a data da festa para enviar o pedido.';
