@@ -161,7 +161,8 @@
     const baixadas = new Set([caminhoCard(fotos[0])]);
 
     // os pontos do anel: um botão de 44px por foto, com o ponto de 7px no meio
-    const pontos = el('div', n > MAX_PONTOS ? 'foto-conta' : 'foto-pontos');
+    const pontos = el(n > MAX_PONTOS ? 'button' : 'div', n > MAX_PONTOS ? 'foto-conta' : 'foto-pontos');
+    if (n > MAX_PONTOS) { pontos.type = 'button'; pontos.onclick = () => irPara(0); }
     const botoes = n > MAX_PONTOS ? [] : fotos.map((f, j) => {
       const b = el('button', 'ponto');
       b.type = 'button';
@@ -174,7 +175,10 @@
     function marcar() {
       const i = indice();
       if (botoes.length) botoes.forEach((b, j) => j === i ? b.setAttribute('aria-current', 'true') : b.removeAttribute('aria-current'));
-      else pontos.textContent = (i + 1) + ' de ' + n;
+      else {
+        pontos.textContent = (i + 1) + ' de ' + n;
+        pontos.setAttribute('aria-label', 'Foto ' + (i + 1) + ' de ' + n + ' de ' + produto.nome + '. Voltar pra primeira');
+      }
     }
 
     function baixar(j) {
@@ -320,19 +324,29 @@
 
     const pontos = $('tela-pontos');
     pontos.textContent = '';
-    if (fotos.length > 1) {
+    // até sete fotos, pontos clicáveis de 44px como no card; acima, só o contador
+    if (fotos.length > 1 && fotos.length <= MAX_PONTOS) {
       fotos.forEach((_, j) => {
-        const p = el('span');
-        if (j === galeria.i) p.setAttribute('aria-current', 'true');
-        pontos.append(p);
+        const b = el('button', 'tela-ponto');
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Foto ' + (j + 1) + ' de ' + fotos.length);
+        if (j === galeria.i) b.setAttribute('aria-current', 'true');
+        b.onclick = () => { galeria.i = j; pintarTela(); };
+        pontos.append(b);
       });
     }
+    const conta = $('tela-conta');
+    conta.hidden = fotos.length < 2;
+    conta.setAttribute('aria-label', 'Foto ' + (galeria.i + 1) + ' de ' + fotos.length + '. Voltar pra primeira');
     $('tela-ant').hidden = $('tela-prox').hidden = fotos.length < 2;
 
     [galeria.i - 1, galeria.i + 1].forEach(j => {
       if (fotos[j]) { const pre = new Image(); pre.src = caminhoGaleria(fotos[j]); }
     });
   }
+
+  // tocar no "3 de 13" volta pra primeira: treze arrastos pra voltar é o mesmo problema dos 350 toques
+  $('tela-conta').onclick = () => { if (galeria.produto && galeria.i !== 0) { galeria.i = 0; pintarTela(); } };
 
   function abrirTela(produto, i, origem) {
     galeria = { produto, i, origem };
@@ -482,30 +496,42 @@
   function stepper(produto) {
     const wrap = el('div', 'stepper');
     const menos = el('button', 'stepper-botao', '−');
-    const qtd = el('input', 'stepper-qtd');
+    const qtd = campoQuantidade(produto, () => $('aviso-qtd-' + produto.id));
     const mais = el('button', 'stepper-botao', '+');
 
     menos.type = mais.type = 'button';
     menos.setAttribute('aria-label', 'Tirar de ' + produto.nome);
     mais.setAttribute('aria-label', 'Somar em ' + produto.nome);
+    qtd.id = 'qtd-' + produto.id;
+    mais.id = 'mais-' + produto.id;
 
-    // o número é escrevível no lugar, como na comanda: teclado numérico, só
-    // dígito, quatro no máximo (dois em quem conta pacote, como a torre)
+    menos.onclick = () => mudar(produto.id, -1);
+    mais.onclick = () => mudar(produto.id, 1);
+
+    wrap.append(menos, qtd, mais);
+    return wrap;
+  }
+
+  // o número escrevível, como na comanda: o mesmo campo no card e na linha do
+  // resumo, com as mesmas regras (teclado numérico, só dígito, quatro no máximo
+  // ou dois em quem conta pacote, mínimo com aviso, vazio ou zero sai). Uma
+  // fonte de verdade: quantidades, por definir().
+  let campoAtivo = null;
+  function campoQuantidade(produto, avisoDe) {
+    const qtd = el('input', 'stepper-qtd');
     qtd.type = 'text';
     qtd.inputMode = 'numeric';
     qtd.setAttribute('pattern', '[0-9]*');
     qtd.setAttribute('maxlength', tetoDe(produto));
     qtd.setAttribute('autocomplete', 'off');
     qtd.setAttribute('aria-label', 'Quantidade de ' + produto.nome);
-    qtd.id = 'qtd-' + produto.id;
-    mais.id = 'mais-' + produto.id;
-    qtd.value = '0';
+    qtd.value = String(quantidades[produto.id] || 0);
     ajustarLargura(qtd);
 
     // ao tocar, o número já vem selecionado: digitar substitui em vez de emendar.
     // Guarda o que havia, porque Esc volta pra isso mesmo que já tenha valido na hora
     let antesDeEditar = 0;
-    qtd.onfocus = () => { antesDeEditar = quantidades[produto.id] || 0; setTimeout(() => qtd.select(), 0); };
+    qtd.onfocus = () => { antesDeEditar = quantidades[produto.id] || 0; campoAtivo = qtd; setTimeout(() => qtd.select(), 0); };
     // o que já é válido vale na hora, sem esperar sair do campo; o resto espera
     qtd.oninput = () => {
       qtd.value = qtd.value.replace(/\D/g, '').slice(0, tetoDe(produto));
@@ -520,18 +546,14 @@
     };
     // saiu do campo: vazio ou zero sai do pedido, abaixo do mínimo fica no mínimo
     qtd.onblur = () => {
+      campoAtivo = null;
       const n = Number(qtd.value.replace(/\D/g, '')) || 0;
       const min = minimoDe(produto);
       const curto = n > 0 && n < min;
       definir(produto.id, curto ? min : n, true);
-      if (curto) avisarMinimo(produto);
+      if (curto) avisarMinimo(produto, avisoDe());
     };
-
-    menos.onclick = () => mudar(produto.id, -1);
-    mais.onclick = () => mudar(produto.id, 1);
-
-    wrap.append(menos, qtd, mais);
-    return wrap;
+    return qtd;
   }
 
   // quantos dígitos cabem: quatro no normal, dois em quem conta pacote
@@ -557,9 +579,9 @@
 
   // "O mínimo é 25, deixei 25.", com o número do produto, por três segundos
   const avisos = {};
-  function avisarMinimo(produto) {
+  function avisarMinimo(produto, aviso) {
     const min = minimoDe(produto);
-    const aviso = $('aviso-qtd-' + produto.id);
+    if (!aviso) return;
     aviso.textContent = 'O mínimo é ' + min + ', deixei ' + min + '.';
     aviso.hidden = false;
     clearTimeout(avisos[produto.id]);
@@ -568,6 +590,7 @@
   function esconderAviso(id) {
     const aviso = $('aviso-qtd-' + id);
     if (aviso) aviso.hidden = true;
+    if (linhasResumo[id] && linhasResumo[id].aviso) linhasResumo[id].aviso.hidden = true;
   }
   function avisoQtd(produto) {
     const p = el('p', 'stepper-aviso');
@@ -605,6 +628,7 @@
 
   function card(produto, primeira) {
     const li = el('li', 'produto');
+    li.id = 'produto-' + produto.id;
     const corpo = el('div', 'produto-corpo');
 
     corpo.append(el('h3', 'produto-nome', produto.nome));
@@ -664,36 +688,144 @@
   const abaixoDoMinimo = () =>
     itensEscolhidos().filter(i => i.qtd < minimoDe(i.produto));
 
+  /* ---- o resumo é a comanda ----
+     Cada linha reaproveita o mesmo <li> enquanto o produto estiver no pedido,
+     senão digitar no campo da linha apagaria o próprio campo a cada tecla. Quem
+     foi tirado fica riscado, com "voltar", enquanto o resumo estiver na tela:
+     some quando a linha rola pra fora ou quando o pedido é enviado. */
+
+  const riscadas = {};       // id do produto -> { qtd } ou { orcamento: true }
+  const linhasResumo = {};   // id do produto -> li
+
+  function pintarResumo(itens) {
+    const resumo = $('resumo');
+    const porId = {};
+    itens.forEach(i => { porId[i.produto.id] = i; });
+    const ordem = [];
+    PRODUTOS.forEach(p => {
+      const item = porId[p.id];
+      const tipo = item ? 'item' : (p.id === SOB_ORCAMENTO && querOrcamento) ? 'orcamento' : riscadas[p.id] ? 'riscada' : null;
+      if (!tipo) return;
+      let li = linhasResumo[p.id];
+      if (li && li.tipo !== tipo) { li.remove(); li = null; }
+      if (!li) {
+        li = tipo === 'item' ? linhaItem(p) : tipo === 'orcamento' ? linhaOrcamento(p) : linhaRiscada(p);
+        li.tipo = tipo;
+        li.idProduto = p.id;
+        linhasResumo[p.id] = li;
+      }
+      if (tipo === 'item') {
+        li.sub.textContent = moeda(item.subtotal);
+        li.vezes.textContent = (p.unidade ? ' ' + plural(p.unidade, item.qtd) : '') + ' x ' + moeda(p.preco);
+        // quem está digitando na linha não tem o campo reescrito por baixo dos dedos
+        if (li.campo !== campoAtivo) { li.campo.value = String(item.qtd); ajustarLargura(li.campo); }
+      }
+      ordem.push(li);
+    });
+    Object.keys(linhasResumo).forEach(id => {
+      if (!ordem.includes(linhasResumo[id])) { linhasResumo[id].remove(); delete linhasResumo[id]; }
+    });
+    // só remonta a lista quando a ordem mudou, pra não tirar o foco de quem digita
+    const atual = resumo.children;
+    const igual = atual.length === ordem.length && ordem.every((li, k) => atual[k] === li);
+    if (!igual) { resumo.textContent = ''; ordem.forEach(li => resumo.append(li)); }
+    // a linha riscada só é vigiada depois de estar na página
+    ordem.forEach(li => { if (li.tipo === 'riscada' && !li.vigiada) { li.vigiada = true; observarSaida(li, li.idProduto); } });
+  }
+
+  function linhaItem(p) {
+    const li = el('li', 'resumo-linha');
+    const nome = el('a', 'resumo-nome', p.nome);
+    nome.href = '#produto-' + p.id;
+    const qtd = el('span', 'resumo-qtd');
+    const campo = campoQuantidade(p, () => li.aviso);
+    campo.classList.add('resumo-campo');
+    const vezes = el('span', 'resumo-vezes');
+    qtd.append(campo, vezes);
+    const sub = el('span', 'resumo-sub');
+    const tirar = el('button', 'resumo-tirar', 'tirar');
+    tirar.type = 'button';
+    tirar.setAttribute('aria-label', 'Tirar ' + p.nome + ' do pedido');
+    tirar.onclick = () => riscar(p.id);
+    const aviso = el('p', 'stepper-aviso resumo-aviso');
+    aviso.setAttribute('role', 'status');
+    aviso.hidden = true;
+    li.append(nome, sub, qtd, tirar, aviso);
+    li.campo = campo; li.vezes = vezes; li.sub = sub; li.aviso = aviso;
+    return li;
+  }
+
+  function linhaOrcamento(p) {
+    const li = el('li', 'resumo-linha resumo-linha--orcamento');
+    const nome = el('a', 'resumo-nome', p.nome);
+    nome.href = '#produto-' + p.id;
+    const tirar = el('button', 'resumo-tirar', 'tirar');
+    tirar.type = 'button';
+    tirar.setAttribute('aria-label', 'Tirar o orçamento de ' + p.nome + ' do pedido');
+    tirar.onclick = () => riscar(p.id);
+    li.append(nome, el('span', 'resumo-sub', 'fora do total'), el('span', 'resumo-qtd', 'sob orçamento'), tirar);
+    return li;
+  }
+
+  // riscada como na comanda de papel: fica no lugar, com "voltar"
+  function linhaRiscada(p) {
+    const li = el('li', 'resumo-linha resumo-linha--riscada');
+    const voltar = el('button', 'resumo-voltar', 'voltar');
+    voltar.type = 'button';
+    voltar.setAttribute('aria-label', 'Voltar com ' + p.nome + ' pro pedido');
+    voltar.onclick = () => desriscar(p.id);
+    li.append(el('span', 'resumo-nome', p.nome), el('span', 'resumo-qtd', 'tirei.'), voltar);
+    return li;
+  }
+
+  // a linha riscada some quando rola pra fora da tela (sem relógio: a pessoa
+  // olha o total, confere, decide, e isso não tem prazo)
+  function observarSaida(li, id) {
+    if (typeof IntersectionObserver === 'undefined') return;
+    // só some depois de ter sido vista: a linha pode nascer fora da tela (tirada
+    // por um toque na beirada, ou a lista remontou) e nesse caso espera a pessoa
+    // chegar nela e depois sair
+    let vista = false;
+    const io = new IntersectionObserver(entradas => {
+      entradas.forEach(e => {
+        if (e.isIntersecting) { vista = true; return; }
+        if (vista && riscadas[id]) { io.disconnect(); esquecer(id); }
+      });
+    });
+    io.observe(li);
+  }
+
+  function riscar(id) {
+    if (id === SOB_ORCAMENTO) {
+      riscadas[id] = { orcamento: true };
+      querOrcamento = false;
+      $('orcamento-' + id).checked = false;
+      atualizar();
+      return;
+    }
+    riscadas[id] = { qtd: quantidades[id] || 0 };
+    definir(id, 0, true);
+  }
+  function desriscar(id) {
+    const r = riscadas[id];
+    delete riscadas[id];
+    if (!r) return;
+    if (r.orcamento) { querOrcamento = true; $('orcamento-' + id).checked = true; atualizar(); return; }
+    definir(id, r.qtd, true);
+  }
+  function esquecer(id) { delete riscadas[id]; atualizar(); }
+  function esquecerTudo() { Object.keys(riscadas).forEach(id => delete riscadas[id]); atualizar(); }
+
   function atualizar() {
     const itens = itensEscolhidos();
     const total = somar(itens);
-    const temAlgo = itens.length > 0 || querOrcamento;
+    // as linhas riscadas seguram o resumo aberto, senão "voltar" some junto com o último item
+    const temAlgo = itens.length > 0 || querOrcamento || Object.keys(riscadas).length > 0;
 
     $('pedido-vazio').hidden = temAlgo;
     $('pedido-conteudo').hidden = !temAlgo;
 
-    const resumo = $('resumo');
-    resumo.textContent = '';
-
-    itens.forEach(i => {
-      const linha = el('li', 'resumo-linha');
-      linha.append(
-        el('span', 'resumo-nome', i.produto.nome),
-        el('span', 'resumo-qtd', textoQtd(i)),
-        el('span', 'resumo-sub', moeda(i.subtotal))
-      );
-      resumo.append(linha);
-    });
-
-    if (querOrcamento) {
-      const linha = el('li', 'resumo-linha resumo-linha--orcamento');
-      linha.append(
-        el('span', 'resumo-nome', acharProduto(SOB_ORCAMENTO).nome),
-        el('span', 'resumo-qtd', 'sob orçamento'),
-        el('span', 'resumo-sub', 'fora do total')
-      );
-      resumo.append(linha);
-    }
+    pintarResumo(itens);
 
     // sem nada somado não faz sentido mostrar "Total R$ 0,00"
     $('total-linha').hidden = total === 0;
@@ -728,7 +860,6 @@
     $('barra-qtd').textContent = rotulo;
     $('barra-total').textContent = moeda(total);
     // só orçamento: sem valor na pílula, senão R$ 0,00 parece grátis
-    $('barra-total').hidden = pecas === 0;
     $('barra-total').hidden = total === 0;
     caixa.hidden = false;
   }
@@ -880,6 +1011,7 @@
     // caso o maxlength seja contornado
     const obs = campoObs.value.replace(/\r\n/g, '\n').trim().slice(0, LIMITE_OBS);
     window.open(link(mensagem(campoData.value, obs)), '_blank');
+    esquecerTudo();
   };
 
   atualizar();

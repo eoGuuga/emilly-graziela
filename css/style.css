@@ -185,7 +185,20 @@ h2 {
 .ponto::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--azul); transition: transform 120ms; }
 .ponto[aria-current]::before { background: var(--tinta); }
 .ponto:active::before { transform: scale(1.5); }
-.foto-conta { text-align: center; font-size: 14px; color: var(--fraca); margin-top: -4px; }
+/* "3 de 13" é um botão: tocar volta pra primeira. A faixa de 44px sobe sobre a
+   borda da foto como a dos pontos */
+.foto-conta {
+  display: block;
+  height: 44px;
+  margin: -8px auto -10px;
+  padding: 0 12px;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--fraca);
+  cursor: pointer;
+}
 
 /* sem foto: guarda a proporção pra nada pular quando a foto entrar */
 .foto--vazia {
@@ -398,17 +411,44 @@ h2 {
 .pedido-vazio { text-align: center; color: var(--fraca); margin-top: 26px; }
 
 .resumo { display: grid; gap: 14px; margin-top: 30px; }
+/* o resumo é a comanda: nome (link pro card), número escrevível (o mesmo campo
+   do card, menor), subtotal, e "tirar" em texto. Quem foi tirado fica riscado,
+   com "voltar", enquanto o resumo estiver na tela. */
 .resumo-linha {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 2px 14px;
-  padding-bottom: 14px;
+  gap: 0 14px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--linha);
+  align-items: center;
 }
-.resumo-nome { grid-column: 1; font-family: var(--serifa); font-weight: 600; font-size: 18px; }
-.resumo-qtd  { grid-column: 1; font-size: 14px; color: var(--fraca); }
-.resumo-sub  { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-family: var(--serifa); font-weight: 600; font-size: 18px; }
+.resumo-nome { grid-column: 1; grid-row: 1; font-family: var(--serifa); font-weight: 600; font-size: 18px; color: inherit; }
+a.resumo-nome { text-decoration: underline dotted var(--azul); text-underline-offset: 4px; }
+.resumo-sub { grid-column: 2; grid-row: 1; font-family: var(--serifa); font-weight: 600; font-size: 18px; }
+.resumo-qtd { grid-column: 1; grid-row: 2; display: flex; align-items: center; gap: 4px; min-height: 44px; font-size: 14px; color: var(--fraca); }
+.resumo-campo { font-size: 16px; }
+.resumo-tirar,
+.resumo-voltar {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--fraca);
+  cursor: pointer;
+}
+.resumo-tirar:active, .resumo-voltar:active { text-decoration: underline; }
+.resumo-aviso { grid-column: 1 / -1; grid-row: 3; text-align: left; margin-top: 0; }
 .resumo-linha--orcamento .resumo-sub { font-style: italic; font-size: 14px; color: var(--fraca); }
+.resumo-linha--riscada .resumo-nome { text-decoration: line-through; color: var(--fraca); }
+.resumo-linha--riscada .resumo-qtd { color: var(--fraca); }
+.resumo-voltar { color: var(--tinta); font-weight: 600; }
+.resumo-volta { margin-top: 18px; font-size: 14.5px; }
+.resumo-volta a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
 
 .total {
   display: flex;
@@ -600,7 +640,7 @@ body:has(.tela[open]) { overflow: hidden; }
   inset: 0;
   display: grid;
   place-items: center;
-  padding: 56px 0 84px;
+  padding: 56px 0 96px;
   touch-action: pan-y pinch-zoom;
   overflow: hidden;
   /* linha definida: com linha auto, o max-height da foto era ignorado e a foto alta vazava */
@@ -618,7 +658,7 @@ body:has(.tela[open]) { overflow: hidden; }
   height: 100%;
   max-width: none;
   max-height: none;
-  padding: 56px 0 84px;
+  padding: 56px 0 96px;
   box-sizing: border-box;
   transform: translateX(calc(var(--lado) * 100% + var(--dx, 0px)));
 }
@@ -652,25 +692,50 @@ body:has(.tela[open]) { overflow: hidden; }
   position: absolute;
   left: 16px;
   right: 16px;
-  bottom: calc(40px + env(safe-area-inset-bottom));
+  bottom: calc(56px + env(safe-area-inset-bottom));
   text-align: center;
   font-family: var(--serifa);
   font-weight: 600;
   font-size: 17px;
 }
-.tela-conta { font-family: var(--sans); font-weight: 400; font-size: 14px; opacity: .75; margin-left: 10px; }
+/* o contador é um botão: tocar volta pra primeira. 44px de toque, 22px de linha */
+.tela-conta {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  margin: -11px 0 -11px 4px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 14px;
+  opacity: .75;
+  cursor: pointer;
+}
 
 .tela-pontos {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(18px + env(safe-area-inset-bottom));
+  bottom: calc(0px + env(safe-area-inset-bottom));
   display: flex;
   justify-content: center;
-  gap: 8px;
 }
-.tela-pontos span { width: 7px; height: 7px; border-radius: 50%; background: rgba(251, 247, 245, .35); }
-.tela-pontos span[aria-current] { background: var(--rosa); }
+/* pontos clicáveis, a mesma mecânica dos do card: 44px de toque, 7px visíveis */
+.tela-ponto {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.tela-ponto::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: rgba(251, 247, 245, .35); }
+.tela-ponto[aria-current]::before { background: var(--rosa); }
 
 /* desktop: duas colunas de produtos, mais ar */
 
