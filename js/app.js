@@ -58,10 +58,12 @@
 
   const foraDoPrazo = iso => Boolean(iso) && diasAte(iso) < DIAS_MINIMOS;
 
-  function textoPrazo(dias) {
-    if (dias <= 0) return 'a festa é hoje';
-    if (dias === 1) return 'falta 1 dia';
-    return 'faltam ' + dias + ' dias';
+  // a frase muda quando a festa é hoje ou amanhã; "a festa é hoje, menos que
+  // os 15 dias" não é frase
+  function fraseDoPrazo(dias) {
+    if (dias <= 0) return 'a festa é hoje, então não tem os 15 dias de antecedência.';
+    if (dias === 1) return 'a festa é amanhã, então não tem os 15 dias de antecedência.';
+    return 'faltam ' + dias + ' dias, menos que os 15 dias de antecedência.';
   }
 
   function el(tag, classe, texto) {
@@ -335,7 +337,12 @@
     galeria = { produto, i, origem };
     pintarTela();
     tela.showModal();
+    // o voltar do navegador fecha a tela em vez de sair do site
+    history.pushState({ tela: true }, '');
   }
+  window.onpopstate = () => { if (tela.open) tela.close(); };
+  // recarregou com a entrada da tela no histórico: limpa, senão o próximo voltar não anda
+  if (history.state && history.state.tela) history.replaceState(null, '');
 
   function trocarFoto(delta) {
     const n = galeria.produto.fotos.length;
@@ -359,6 +366,8 @@
     // o card acompanha a foto onde a pessoa parou
     if (galeria.produto && sincronizarCard[galeria.produto.id]) sincronizarCard[galeria.produto.id](galeria.i);
     if (galeria.origem) galeria.origem.focus();
+    // fechou pelo X, Esc ou arrasto: consome a entrada que abrir empilhou
+    if (history.state && history.state.tela) history.back();
   };
 
   tela.onkeydown = e => {
@@ -711,6 +720,8 @@
 
     $('barra-qtd').textContent = rotulo;
     $('barra-total').textContent = moeda(total);
+    // só orçamento: sem valor na pílula, senão R$ 0,00 parece grátis
+    $('barra-total').hidden = pecas === 0;
     $('barra-total').hidden = total === 0;
     caixa.hidden = false;
   }
@@ -725,8 +736,7 @@
 
     // abaixo do prazo ideal: sinaliza e pergunta disponibilidade
     if (foraDoPrazo(dataFesta)) {
-      linhas.push('Atenção: ' + textoPrazo(diasAte(dataFesta)) +
-                  ', menos que os 15 dias de antecedência. Você consegue confirmar se tem disponibilidade?');
+      linhas.push('Atenção: ' + fraseDoPrazo(diasAte(dataFesta)) + ' Você consegue confirmar se tem disponibilidade?');
     }
 
     linhas.push('');
@@ -835,7 +845,11 @@
     }
     erroMinimo.hidden = true;
 
-    if (!campoData.value) {
+    // sem data, ou data que já passou: o min trava o seletor, mas data digitada passa por ele
+    if (!campoData.value || campoData.value < hoje()) {
+      erroData.textContent = campoData.value
+        ? 'Essa data já passou. Confere a data da festa.'
+        : 'Informe a data da festa para enviar o pedido.';
       erroData.hidden = false;
       campoData.setAttribute('aria-invalid', 'true');
       campoData.focus();
