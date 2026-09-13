@@ -21,7 +21,8 @@ const PRODUTOS = [
     minimo: 1,
     unidade: '',
     fotos: [
-      { arquivo: 'pao-de-mel-mesa.jpg', alt: 'mini pães de mel redondos, com carinha de ursinho em pasta americana' }
+      { arquivo: 'pao-de-mel-mesa.jpg', alt: 'mini pães de mel redondos, com carinha de ursinho em pasta americana' },
+      { arquivo: 'pao-de-mel-mesa-mel-e-abelhas.jpg', alt: 'mini pães de mel redondos de tema mel e abelhas, decorados em pasta americana' }
     ]
   },
   {
@@ -38,7 +39,14 @@ const PRODUTOS = [
       { arquivo: 'pao-de-mel-2d-pinguins.jpg', alt: 'pães de mel quadrados com pinguins, decorados em pasta americana' },
       { arquivo: 'pao-de-mel-2d-abelhas.jpg', alt: 'pão de mel quadrado com ursinho, abelhas e favos de mel, com canudo e laço' },
       { arquivo: 'pao-de-mel-2d-sol.jpg', alt: 'pães de mel quadrados de tema sol, com laços de fita laranja' },
-      { arquivo: 'pao-de-mel-2d-cha-de-bebe.jpg', alt: 'pães de mel quadrados de chá de bebê, com ursinhos e laços' }
+      { arquivo: 'pao-de-mel-2d-cha-de-bebe.jpg', alt: 'pães de mel quadrados de chá de bebê, com ursinhos e laços' },
+      { arquivo: 'pao-de-mel-2d-natal-caixa.jpg', alt: 'caixa com pães de mel quadrados de tema natalino e docinhos redondos decorados' },
+      { arquivo: 'pao-de-mel-2d-natal.jpg', alt: 'pães de mel quadrados de tema natalino, decorados em pasta americana' },
+      { arquivo: 'pao-de-mel-2d-mel-e-abelhas.jpg', alt: 'pão de mel quadrado de tema mel e abelhas, com ursinho modelado em pasta americana' },
+      { arquivo: 'pao-de-mel-2d-margaridas.jpg', alt: 'pão de mel quadrado com bichinho modelado, margaridas e canudo com laço' },
+      { arquivo: 'pao-de-mel-2d-pote-de-mel.jpg', alt: 'pão de mel quadrado de tema mel, com ursinho e pote modelados em pasta americana' },
+      { arquivo: 'pao-de-mel-2d-inverno-bonequinhas.jpg', alt: 'pães de mel quadrados de tema inverno, com bonequinhas modeladas e flocos de neve' },
+      { arquivo: 'pao-de-mel-2d-inverno.jpg', alt: 'pães de mel quadrados de tema inverno, decorados em pasta americana' }
     ]
   },
   {
@@ -53,7 +61,8 @@ const PRODUTOS = [
       { arquivo: 'pao-de-mel-3d.jpg', alt: 'pão de mel 3D em formato de casinha, modelado em pasta americana', foco: '50% 40%' },
       { arquivo: 'pao-de-mel-3d-capa-vermelha.jpg', alt: 'pão de mel 3D com menina de capa vermelha modelada em pasta americana' },
       { arquivo: 'pao-de-mel-3d-ursinho.jpg', alt: 'pão de mel 3D com ursinho modelado sobre base decorada' },
-      { arquivo: 'pao-de-mel-3d-ursinho-base-azul.jpg', alt: 'pão de mel 3D com ursinho modelado sobre base azul' }
+      { arquivo: 'pao-de-mel-3d-ursinho-base-azul.jpg', alt: 'pão de mel 3D com ursinho modelado sobre base azul' },
+      { arquivo: 'pao-de-mel-3d-gatinhos.jpg', alt: 'pães de mel 3D com bonequinha e gatinhos modelados sobre base decorada' }
     ]
   },
   {
@@ -65,7 +74,9 @@ const PRODUTOS = [
     minimo: 1,
     unidade: '',
     fotos: [
-      { arquivo: 'paleta-de-pao-de-mel.jpg', alt: 'paletas de pão de mel cobertas com chocolate, decoradas em 2D com laço de fita' }
+      { arquivo: 'paleta-de-pao-de-mel.jpg', alt: 'paletas de pão de mel cobertas com chocolate, decoradas em 2D com laço de fita' },
+      { arquivo: 'paleta-de-pao-de-mel-natal.jpg', alt: 'paletas de pão de mel de tema natalino, com canudo listrado e laço' },
+      { arquivo: 'paleta-de-pao-de-mel-rosa-modelada.jpg', alt: 'paletas de pão de mel decoradas em pasta americana, com laço dourado e rosa modelada' }
     ]
   },
   {
@@ -80,7 +91,11 @@ const PRODUTOS = [
       { arquivo: 'pirulito-personalizado.jpg', alt: 'pirulitos de chocolate redondos, decorados em 2D com canudo e laço de fita' },
       { arquivo: 'pirulito-dinossauros.jpg', alt: 'pirulitos de chocolate redondos com dinossauros em pasta americana' },
       { arquivo: 'pirulito-cha-de-bebe.jpg', alt: 'pirulitos redondos de chá de bebê, com roupinhas em pasta americana' },
-      { arquivo: 'pirulito-ursinhos.jpg', alt: 'pirulitos redondos com ursinhos, em rosa e verde-água' }
+      { arquivo: 'pirulito-ursinhos.jpg', alt: 'pirulitos redondos com ursinhos, em rosa e verde-água' },
+      { arquivo: 'pirulito-bichinhos.jpg', alt: 'pirulitos de chocolate redondos com bichinhos modelados em pasta americana' },
+      { arquivo: 'pirulito-numero-um.jpg', alt: 'pirulitos de chocolate redondos, um com o número um e outro com bichinho modelado' },
+      { arquivo: 'pirulito-bichinhos-laco.jpg', alt: 'pirulitos de chocolate redondos com bichinhos modelados e laço de fita' },
+      { arquivo: 'pirulito-porquinho.jpg', alt: 'pirulitos de chocolate redondos com bonequinha e porquinho modelados' }
     ]
   },
   {
@@ -157,7 +172,9 @@ const PRODUTOS = [
     fotos: [
       { arquivo: 'biscoito-decorado.jpg', alt: 'biscoitos decorados em glacê real, com laço de fita e embalagem' },
       { arquivo: 'biscoito-decorado-embalado.jpg', alt: 'biscoitos decorados em glacê real, embalados com laço e tag' },
-      { arquivo: 'biscoito-decorado-ovelhinha.jpg', alt: 'biscoito decorado em formato de ovelhinha, no palito com laço' }
+      { arquivo: 'biscoito-decorado-ovelhinha.jpg', alt: 'biscoito decorado em formato de ovelhinha, no palito com laço' },
+      { arquivo: 'biscoito-decorado-natal-tabua.jpg', alt: 'biscoitos decorados em glacê real, de tema natalino, sobre tábua de madeira' },
+      { arquivo: 'biscoito-decorado-natal-lacos.jpg', alt: 'biscoitos decorados em glacê real, de tema natalino, com laços de fita' }
     ]
   },
   {
@@ -168,7 +185,11 @@ const PRODUTOS = [
     categoria: 'avulso',
     minimo: 10,
     unidade: '',
-    fotos: []
+    fotos: [
+      { arquivo: 'cupcake.jpg', alt: 'cupcakes com chantilly azul e rosa, decorados com cauda de sereia e estrela do mar' },
+      { arquivo: 'cupcake-patinha.jpg', alt: 'cupcakes com chantilly rosa, tag em papel no topo e patinha em pasta americana' },
+      { arquivo: 'cupcake-confeitos.jpg', alt: 'cupcakes com chantilly e confeitos coloridos, com tags em papel no topo' }
+    ]
   },
   {
     id: 'kit-festa-p',
