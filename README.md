@@ -33,7 +33,10 @@ Dois campos definem como o item é vendido:
 
 - `minimo` é a quantidade mínima, `1` quando não há regra. O botão "Adicionar"
   vira o contador no primeiro toque, já no mínimo, e dali anda de 1 em 1.
-  Descendo abaixo do mínimo volta para 0 e o botão reaparece. O envio trava se
+  O número do contador é um campo: dá pra escrever a quantidade direto (só
+  dígitos, até quatro; dois na Torre). Vazio ou zero tira do pedido; abaixo
+  do mínimo fica no mínimo, com aviso. Descendo abaixo do mínimo pelo menos
+  volta para 0 e o botão reaparece. O envio trava se
   algo escapar.
 - `unidade` nomeia o que o contador conta, quando não é unidade solta. A Torre de
   Cake Donuts usa `unidade: 'torre'`, porque ali o contador conta torres e não

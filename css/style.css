@@ -282,13 +282,30 @@ h2 {
 }
 .stepper-botao:active { background: var(--rosa-fraco); }
 
+/* o número do contador é um campo, escrevível no lugar: mesma fonte, e embaixo
+   dele a linha pontilhada da comanda, o pontilhado do anel, que vira tinta e
+   contínua no foco. A largura acompanha os dígitos (o app escreve em ch). */
 .stepper-qtd {
   min-width: 2.6ch;
+  height: 44px;
+  margin: 0;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: radial-gradient(circle, var(--azul) 1px, transparent 1.3px) center bottom 9px / 5px 2px repeat-x;
   text-align: center;
   font-family: var(--serifa);
   font-weight: 600;
   font-size: 19px;
+  color: var(--tinta);
+  caret-color: var(--tinta);
 }
+.stepper-qtd:focus {
+  outline: none;
+  background: linear-gradient(var(--tinta), var(--tinta)) center bottom 9px / 100% 2px no-repeat;
+}
+.stepper-aviso { font-size: 13.5px; color: var(--fraca); text-align: right; margin-top: -4px; }
 
 /* o item sob orçamento entra marcado em vez de contado */
 .marcar {

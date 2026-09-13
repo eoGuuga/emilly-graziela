@@ -472,19 +472,98 @@
   function stepper(produto) {
     const wrap = el('div', 'stepper');
     const menos = el('button', 'stepper-botao', '−');
-    const qtd = el('output', 'stepper-qtd', '0');
+    const qtd = el('input', 'stepper-qtd');
     const mais = el('button', 'stepper-botao', '+');
 
     menos.type = mais.type = 'button';
     menos.setAttribute('aria-label', 'Tirar de ' + produto.nome);
     mais.setAttribute('aria-label', 'Somar em ' + produto.nome);
+
+    // o número é escrevível no lugar, como na comanda: teclado numérico, só
+    // dígito, quatro no máximo (dois em quem conta pacote, como a torre)
+    qtd.type = 'text';
+    qtd.inputMode = 'numeric';
+    qtd.setAttribute('pattern', '[0-9]*');
+    qtd.setAttribute('maxlength', tetoDe(produto));
+    qtd.setAttribute('autocomplete', 'off');
+    qtd.setAttribute('aria-label', 'Quantidade de ' + produto.nome);
     qtd.id = 'qtd-' + produto.id;
+    qtd.value = '0';
+    ajustarLargura(qtd);
+
+    // ao tocar, o número já vem selecionado: digitar substitui em vez de emendar.
+    // Guarda o que havia, porque Esc volta pra isso mesmo que já tenha valido na hora
+    let antesDeEditar = 0;
+    qtd.onfocus = () => { antesDeEditar = quantidades[produto.id] || 0; setTimeout(() => qtd.select(), 0); };
+    // o que já é válido vale na hora, sem esperar sair do campo; o resto espera
+    qtd.oninput = () => {
+      qtd.value = qtd.value.replace(/\D/g, '').slice(0, tetoDe(produto));
+      ajustarLargura(qtd);
+      esconderAviso(produto.id);
+      const n = Number(qtd.value);
+      if (qtd.value && n >= minimoDe(produto)) definir(produto.id, n, false);
+    };
+    qtd.onkeydown = e => {
+      if (e.key === 'Enter') qtd.blur();
+      if (e.key === 'Escape') { qtd.value = String(antesDeEditar); qtd.blur(); }
+    };
+    // saiu do campo: vazio ou zero sai do pedido, abaixo do mínimo fica no mínimo
+    qtd.onblur = () => {
+      const n = Number(qtd.value.replace(/\D/g, '')) || 0;
+      const min = minimoDe(produto);
+      const curto = n > 0 && n < min;
+      definir(produto.id, curto ? min : n, true);
+      if (curto) avisarMinimo(produto);
+    };
 
     menos.onclick = () => mudar(produto.id, -1);
     mais.onclick = () => mudar(produto.id, 1);
 
     wrap.append(menos, qtd, mais);
     return wrap;
+  }
+
+  // quantos dígitos cabem: quatro no normal, dois em quem conta pacote
+  const tetoDe = p => (p.unidade ? 2 : 4);
+
+  // a largura do campo acompanha os dígitos
+  function ajustarLargura(campo) {
+    campo.style.width = 'calc(' + Math.max(2, campo.value.length) + 'ch + 10px)';
+  }
+
+  // fixa a quantidade: zero tira do pedido e a pílula volta a "Adicionar"
+  function definir(id, n, pintar) {
+    if (n === 0) delete quantidades[id];
+    else quantidades[id] = n;
+    if (pintar) {
+      const campo = $('qtd-' + id);
+      campo.value = String(n);
+      ajustarLargura(campo);
+    }
+    $('acao-' + id).classList.toggle('acao--aberta', n > 0);
+    atualizar();
+  }
+
+  // "O mínimo é 25, deixei 25.", com o número do produto, por três segundos
+  const avisos = {};
+  function avisarMinimo(produto) {
+    const min = minimoDe(produto);
+    const aviso = $('aviso-qtd-' + produto.id);
+    aviso.textContent = 'O mínimo é ' + min + ', deixei ' + min + '.';
+    aviso.hidden = false;
+    clearTimeout(avisos[produto.id]);
+    avisos[produto.id] = setTimeout(() => { aviso.hidden = true; }, 3000);
+  }
+  function esconderAviso(id) {
+    const aviso = $('aviso-qtd-' + id);
+    if (aviso) aviso.hidden = true;
+  }
+  function avisoQtd(produto) {
+    const p = el('p', 'stepper-aviso');
+    p.id = 'aviso-qtd-' + produto.id;
+    p.setAttribute('role', 'status');
+    p.hidden = true;
+    return p;
   }
 
   // "Adicionar" entra; quando a quantidade passa de zero ele vira o contador
@@ -527,7 +606,7 @@
     } else if (temPreco(produto)) {
       const linha = el('div', 'produto-linha');
       linha.append(precoEl(produto.preco), acao(produto));
-      corpo.append(linha);
+      corpo.append(linha, avisoQtd(produto));
       // no kit o preço é do kit inteiro, não cabe "por unidade"
       if (produto.categoria !== 'kit') corpo.append(el('p', 'produto-regra', regraDeVenda(produto)));
     } else {
@@ -553,12 +632,8 @@
       if (novo < min) novo = 0;
     }
 
-    if (novo === 0) delete quantidades[id];
-    else quantidades[id] = novo;
-
-    $('qtd-' + id).textContent = novo;
-    $('acao-' + id).classList.toggle('acao--aberta', novo > 0);
-    atualizar();
+    esconderAviso(id);
+    definir(id, novo, true);
   }
 
   function itensEscolhidos() {
