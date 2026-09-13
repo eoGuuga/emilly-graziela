@@ -491,17 +491,33 @@ h2 {
 .rodape-nome { font-family: var(--serifa); font-weight: 600; font-size: 20px; }
 .rodape-local { font-size: 14px; color: var(--fraca); margin-top: 4px; }
 .rodape-horario { font-size: 15px; margin-top: 10px; }
-.rodape-whats { max-width: 20rem; margin: 22px auto 0; }
+/* as marcas: contorno na tinta, no peso da borda do botão; o fone e o ponto
+   são sólidos porque na marca eles são sólidos. Escondidas do leitor de tela,
+   o texto ao lado já diz o nome. */
+.marca-svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.marca-cheia { fill: currentColor; stroke: none; }
+.rodape-whats { max-width: 20rem; margin: 22px auto 0; gap: 10px; }
 .rodape-numero { font-size: 14px; color: var(--fraca); margin-top: 10px; }
 .rodape-insta { font-size: 15px; margin-top: 18px; }
 .rodape-insta a {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   min-height: 44px;
-  padding: 0 3px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  padding: 0 6px;
+  text-decoration: none;
 }
+.rodape-insta .marca-svg { width: 18px; height: 18px; }
+.rodape-arroba { text-decoration: underline; text-underline-offset: 3px; }
 @media (min-width: 720px) { .rodape-anel { width: 72px; height: 72px; } }
 
 /* a pílula flutuante do pedido */
