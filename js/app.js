@@ -133,7 +133,8 @@
   const fotoAtual = {};        // id do produto -> índice da foto que o card mostra
   const sincronizarCard = {};  // id do produto -> função que leva o card a um índice
   const LIMIAR_ARRASTO = 50;   // px de arrasto lateral que trocam a foto
-  const MAX_PONTOS = 8;        // acima disso os pontos viram "n de N" em texto
+  const MAX_PONTOS = 7;        // do oitavo em diante os pontos viram "n de N" em texto:
+                               // oito pontos de 44px não cabem em 320px de coluna sem encolher
 
   // o foco é por foto: a mão dela, o topo da torre, onde o produto está
   function pintarFoto(img, f) {
