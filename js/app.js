@@ -497,6 +497,7 @@
     qtd.setAttribute('autocomplete', 'off');
     qtd.setAttribute('aria-label', 'Quantidade de ' + produto.nome);
     qtd.id = 'qtd-' + produto.id;
+    mais.id = 'mais-' + produto.id;
     qtd.value = '0';
     ajustarLargura(qtd);
 
@@ -581,6 +582,7 @@
     wrap.id = 'acao-' + produto.id;
     const add = el('button', 'adicionar', 'Adicionar');
     add.type = 'button';
+    add.id = 'adicionar-' + produto.id;
     add.setAttribute('aria-label', 'Adicionar ' + produto.nome);
     add.onclick = () => mudar(produto.id, 1);
     wrap.append(add, stepper(produto));
@@ -643,6 +645,10 @@
 
     esconderAviso(id);
     definir(id, novo, true);
+    // o botão tocado some: ao abrir o foco vai pro "+", ao fechar volta pro "Adicionar"
+    // (sem rolar a página, e sem cair no campo, que abriria o teclado)
+    if (delta > 0 && atual === 0) $('mais-' + id).focus({ preventScroll: true });
+    if (delta < 0 && novo === 0) $('adicionar-' + id).focus({ preventScroll: true });
   }
 
   function itensEscolhidos() {

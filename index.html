@@ -101,17 +101,17 @@
         <form class="form-pedido" id="form-pedido" novalidate>
           <p class="campo">
             <label for="data-festa">Data da festa</label>
-            <input type="date" id="data-festa" name="data-festa" required>
-            <span class="ajuda">Os doces são feitos pra essa data. O ideal é encomendar com 15 dias de antecedência, que é o prazo que eu uso pra organizar a agenda; com menos, me chama que eu vejo a disponibilidade.</span>
-            <span class="erro" id="erro-data" hidden>Informe a data da festa para enviar o pedido.</span>
-            <span class="aviso-prazo" id="aviso-prazo" hidden>Menos de 15 dias de antecedência. Me chama no WhatsApp que eu vejo a disponibilidade.</span>
+            <input type="date" id="data-festa" name="data-festa" required aria-describedby="ajuda-data">
+            <span class="ajuda" id="ajuda-data">Os doces são feitos pra essa data. O ideal é encomendar com 15 dias de antecedência, que é o prazo que eu uso pra organizar a agenda; com menos, me chama que eu vejo a disponibilidade.</span>
+            <span class="erro" id="erro-data" role="alert" hidden>Informe a data da festa para enviar o pedido.</span>
+            <span class="aviso-prazo" id="aviso-prazo" aria-live="polite" hidden>Menos de 15 dias de antecedência. Me chama no WhatsApp que eu vejo a disponibilidade.</span>
           </p>
           <p class="campo">
             <label for="obs">Quer deixar alguma observação? <span class="opcional">(opcional)</span></label>
             <textarea id="obs" name="obs" rows="3" maxlength="300" placeholder="Tema da festa, cores, se quer as trufas de um sabor só, alguma restrição alimentar."></textarea>
-            <span class="contador" id="obs-contador" hidden></span>
+            <span class="contador" id="obs-contador" aria-live="polite" hidden></span>
           </p>
-          <p class="erro" id="erro-minimo" hidden></p>
+          <p class="erro" id="erro-minimo" role="alert" hidden></p>
           <button type="submit" class="botao-enviar">Enviar pedido no WhatsApp</button>
           <p class="form-nota">O pedido abre no WhatsApp já escrito, e a retirada a gente combina por lá. Nada é cobrado aqui. Atendo de terça a sábado, das 10h às 18h.</p>
         </form>
