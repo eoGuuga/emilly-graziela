@@ -17,7 +17,8 @@ GitHub Pages servindo da raiz.
     img/card/              foto de cada produto a 720px, a que o card carrega
     img/galeria/           a mesma foto a 1200px, só carrega quem abre a tela cheia
     img/logotipo.webp      a marca
-    img/emilly-graziela-fouet.jpg  o retrato do topo, 480px, um tamanho só
+    img/emilly-graziela-rosto.jpg  o retrato pequeno do topo, ao lado da marca
+    img/emilly-graziela-fouet.jpg  o retrato da seção "Quem faz os seus doces"
     favicon.ico            ícone, tirado do monograma
     apple-touch-icon.png   ícone de 180px para a tela inicial do iPhone
 

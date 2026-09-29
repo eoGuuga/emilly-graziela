@@ -73,7 +73,7 @@ button { -webkit-user-select: none; user-select: none; }
 /* o pontilhado do anel da logo, esticado, como divisor */
 .pontos {
   width: 7.5rem;
-  margin: 0 auto 18px;
+  margin: 0 auto 16px;
   border: 0;
   border-top: 3px dotted var(--azul);
 }
@@ -81,41 +81,51 @@ button { -webkit-user-select: none; user-select: none; }
 
 /* topo */
 
-/* a marca e a identidade no papel, à esquerda; o retrato dela no canto de cima,
-   à direita, encostando no topo e na borda da tela. O fundo da foto não é o azul
-   da logo (ΔE de 11 a 21) e escurece de cima pra baixo, então não ganha campo de
-   CSS em volta, que mostraria a emenda: a própria foto é o campo. Sem moldura,
-   sem canto redondo, sem sombra. A retirada vem logo abaixo, na largura toda. */
-.topo {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) min(46vw, 260px);
-  grid-template-rows: auto 1fr auto;
-  grid-template-areas: "marca foto" "linha foto" "retirada retirada";
-  column-gap: 16px;
-  padding: 0 env(safe-area-inset-right) 0 max(20px, env(safe-area-inset-left));
+/* o topo segue o eixo da coluna, como o resto da página: o par marca e retrato,
+   a identidade e a retirada centrados no mesmo eixo. A escala de espaço vale na
+   página inteira: 16 entre peças do mesmo grupo, 24 do título até o conteúdo,
+   32 entre grupos (do topo até o cardápio) e 56 entre seções. Cada texto tem a
+   sua largura e as linhas saem balanceadas: é o que faz texto centrado sair
+   composto e não sobrando. */
+.topo { text-align: center; padding: 24px max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left)); }
+
+/* o par: a marca e ela, do mesmo tamanho, cada uma no seu anel pontilhado, com o
+   eixo passando no meio do vão. Um disco sem anel seria o avatar de qualquer perfil.
+   A foto flutua com 15px de papel dentro do anel, como o EG flutua dentro da marca:
+   os dois círculos com a mesma lógica por dentro, e o verde pesando menos */
+.topo-par { display: flex; justify-content: center; align-items: center; gap: 16px; }
+.marca { width: 96px; height: 96px; flex: none; }
+.topo-retrato {
+  width: 96px;
+  height: 96px;
+  flex: none;
+  padding: 15px;
+  border: 2px dotted var(--azul);
+  border-radius: 50%;
+  background: var(--papel);
+  object-fit: cover;
 }
-.marca { grid-area: marca; width: 104px; height: 104px; margin-top: 24px; }
-.topo-foto { grid-area: foto; display: block; width: 100%; height: auto; }
 
-/* quatro pesos de texto na página: decide (serifa 17px), identifica (sans 14px
+/* quatro pesos de texto na página: decide (serifa 16px), identifica (sans 14px
    secundária), fecha (sans 14,5px) e detalhe (sans 14px). No topo só os dois primeiros */
-.topo-linha { grid-area: linha; font-size: 14px; line-height: 1.45; color: var(--fraca); margin-top: 12px; }
+.topo-linha { font-size: 14px; line-height: 1.45; color: var(--fraca); max-width: 20rem; margin: 16px auto 0; text-wrap: balance; }
 
-/* a única condição eliminatória, sozinha, acima de qualquer "Adicionar" */
+/* a única condição eliminatória: a última palavra do topo, a mais pesada, mais
+   perto da identidade (16) do que do cardápio (32) */
 .topo-retirada {
-  grid-area: retirada;
   font-family: var(--serifa);
   font-weight: 600;
   font-size: 16px;
   line-height: 1.35;
-  max-width: 26rem;
-  margin: 16px 20px 0 0;
+  max-width: 21rem;
+  margin: 16px auto 0;
+  text-wrap: balance;
 }
 
 /* blocos */
 
 .bloco { padding-block: 56px; }
-.bloco--primeiro { padding-top: 14px; }
+.bloco--primeiro { padding-top: 32px; }
 .bloco--azul { background: var(--azul-fraco); }
 
 h2 {
@@ -131,12 +141,12 @@ h2 {
   color: var(--fraca);
   font-size: 15px;
   max-width: 28rem;
-  margin: 12px auto 0;
+  margin: 16px auto 0;
 }
 
 /* produtos: uma coluna no celular, um produto por tela */
 
-.lista-produtos { display: grid; gap: 52px; margin-top: 20px; }
+.lista-produtos { display: grid; gap: 52px; margin-top: 24px; }
 
 .produto { display: grid; gap: 14px; align-content: start; }
 .produto-corpo { display: grid; gap: 6px; }
@@ -373,7 +383,7 @@ h2 {
 .tabela tbody th { font-family: var(--serifa); font-weight: 600; font-size: 17px; white-space: nowrap; }
 .tabela .preco { font-size: 19px; }
 /* a foto dos bolos: o carrossel do card, entre a nota e a tabela */
-.bolos-foto { margin-top: 22px; }
+.bolos-foto { margin-top: 24px; }
 .bolos-foto:empty { display: none; }
 
 .tabela--curta { max-width: 18rem; margin-top: 32px; }
@@ -419,7 +429,7 @@ h2 {
 /* pedido */
 
 /* o fechamento: como pagar, sempre à vista, mesmo com pedido vazio */
-.pedido-sub { font-family: var(--serifa); font-weight: 600; font-size: 17px; margin-top: 26px; }
+.pedido-sub { font-family: var(--serifa); font-weight: 600; font-size: 17px; margin-top: 24px; }
 .pedido-texto { font-size: 14.5px; line-height: 1.55; color: var(--fraca); margin-top: 6px; max-width: 30rem; }
 
 .pedido-vazio { text-align: center; color: var(--fraca); margin-top: 26px; }
@@ -531,11 +541,14 @@ a.resumo-nome { text-decoration: underline dotted var(--azul); text-underline-of
 
 /* avisos */
 
-/* quem faz: o texto dela, literal, dois parágrafos em tinta pra ler corrido.
-   Sem foto própria, a dela está no topo */
-.quem-faz { display: grid; gap: 14px; max-width: 32rem; margin: 26px auto 0; font-size: 16px; line-height: 1.6; }
+/* quem faz: o retrato na mesma moldura das fotos do cardápio (4:5, largura da
+   coluna, canto de 6px) e o texto dela embaixo, como a descrição embaixo de cada
+   doce. No desktop, lado a lado, como as duas colunas do cardápio */
+.quem-faz-grade { margin-top: 24px; }
+.quem-faz-foto { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 6px; background: var(--rosa-fraco); }
+.quem-faz { display: grid; gap: 16px; max-width: 32rem; margin: 16px auto 0; font-size: 16px; line-height: 1.6; }
 
-.lista-avisos { display: grid; gap: 12px; margin-top: 26px; font-size: 15.5px; color: var(--fraca); max-width: 30rem; margin-inline: auto; }
+.lista-avisos { display: grid; gap: 12px; margin-top: 24px; font-size: 15.5px; color: var(--fraca); max-width: 30rem; margin-inline: auto; }
 .lista-avisos li { position: relative; padding-left: 18px; }
 .lista-avisos li::before {
   content: "";
@@ -758,23 +771,15 @@ body:has(.tela[open]) { overflow: hidden; }
 /* desktop: duas colunas de produtos, mais ar */
 
 @media (min-width: 720px) {
-  /* no desktop o retrato fica na coluna, encostado no topo, e a retirada sobe
-     pra esquerda, embaixo, ao lado do avental */
-  .topo {
-    max-width: var(--coluna);
-    margin-inline: auto;
-    padding-inline: max(20px, env(safe-area-inset-left)) max(20px, env(safe-area-inset-right));
-    grid-template-columns: minmax(0, 1fr) 260px;
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas: "marca foto" "linha foto" "retirada foto";
-    column-gap: 32px;
-  }
-  .marca { width: 128px; height: 128px; margin-top: 40px; }
-  .topo-retirada { font-size: 19px; margin: 0 0 28px; align-self: end; }
+  .topo { padding-top: 40px; }
+  .topo-retirada { font-size: 19px; max-width: 26rem; }
+  .quem-faz-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+  .quem-faz { margin: 0; }
   .bloco { padding-block: 88px; }
+  .bloco--primeiro { padding-top: 48px; }
   h2 { font-size: 33px; }
-  .pontos { margin-bottom: 26px; }
-  .lista-produtos { grid-template-columns: 1fr 1fr; gap: 56px 32px; margin-top: 44px; }
+  .pontos { margin-bottom: 24px; }
+  .lista-produtos { grid-template-columns: 1fr 1fr; gap: 56px 32px; margin-top: 48px; }
   .produto-nome { font-size: 30px; }
   .rodape-contato { flex-direction: row; gap: 24px; }
 }
