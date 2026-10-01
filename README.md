@@ -19,6 +19,7 @@ GitHub Pages servindo da raiz.
     img/logotipo.webp      a marca
     img/emilly-graziela-rosto.jpg  o retrato pequeno do topo, ao lado da marca
     img/emilly-graziela-fouet.jpg  o retrato da seção "Quem faz os seus doces"
+    img/previa-pao-de-mel-mesa.jpg  a imagem da prévia do link (WhatsApp e redes), 1200x630
     favicon.ico            ícone, tirado do monograma
     apple-touch-icon.png   ícone de 180px para a tela inicial do iPhone
 
